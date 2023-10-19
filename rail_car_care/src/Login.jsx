@@ -1,46 +1,53 @@
 import React, { useState } from 'react';
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData({ ...loginData, [name]: value });
+  };
 
   const handleLogin = () => {
-    // Implement login logic
+    // Retrieve the signup data from localStorage
+    const storedSignupData = JSON.parse(localStorage.getItem('signupData'));
+
+    if (
+      storedSignupData &&
+      loginData.email === storedSignupData.email &&
+      loginData.password === storedSignupData.password
+    ) {
+      // Successful login, you can redirect to another page or set an authentication state
+      window.location.href="/home";
+    } else {
+      // Failed login
+      alert('Login Failed');
+    }
   };
 
   return (
-    <main>
-      <section>
-        <h2>Login</h2>
-        <form>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <button type="button" onClick={handleLogin}>Login</button>
-          </div>
-        </form>
-      </section>
-    </main>
+    <div>
+      <label for="email">Email:</label>
+      <input
+        type="text"
+        name="email"
+        value={loginData.email}
+        onChange={handleChange}
+        placeholder="Email"
+      /><br />
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        name="password"
+        value={loginData.password}
+        onChange={handleChange}
+        placeholder="Password"
+      /><br />
+      <button onClick={handleLogin}>Log In</button>
+    </div>
   );
 }
 
