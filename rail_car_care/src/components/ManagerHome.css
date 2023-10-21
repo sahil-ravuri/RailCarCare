@@ -1,0 +1,55 @@
+/* ManagerHome.css or your existing CSS file */
+.manager-home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px;
+}
+
+.navbar {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.logout-button {
+    background-color: #FF5733;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dashboard {
+    text-align: center;
+}
+
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid rgb(255, 255, 255);
+}
+
+th {
+    background-color: #f2f2f2;
+}
+/* Add this style to create a gap between table columns */
+.dashboard table td {
+    margin-right: 200px; /* Adjust the value to control the gap width */
+}
