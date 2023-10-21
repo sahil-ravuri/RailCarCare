@@ -1,86 +1,86 @@
 import React, { useState } from 'react';
+import { Container, Button, Form, Card, Image } from 'react-bootstrap';
 import Logo from '../images/Logo.PNG';
 import ManagerLogo from '../images/Manager.png';
-import EmployeLogo from '../images/Employee.png';
+import EmployeeLogo from '../images/Employee.png';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
+import { alignPropType } from 'react-bootstrap/esm/types';
 
 function LoginPage() {
-  
-  const align={
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "cadetblue"
-  }
+    const [isFlipped, setFlipped] = useState(false);
+    const [selectedUserType, setSelectedUserType] = useState(null);
+    const [loginData, setLoginData] = useState({
+        email: '',
+        password: '',
+    });
 
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: '',
-  });
+    const handleUserTypeSelect = (userType) => {
+        setSelectedUserType(userType);
+        setFlipped(true);
+    };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData({ ...loginData, [name]: value });
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLoginData({ ...loginData, [name]: value });
+    };
 
-  const handleLogin = () => {
-    // Retrieve the signup data from localStorage
-    const storedSignupData = JSON.parse(localStorage.getItem('signupData'));
+    const handleLogin = () => {
+        console.log("User tried to login");
+        console.log(selectedUserType);
+    };
 
-    if (
-      storedSignupData &&
-      loginData.email === storedSignupData.email &&
-      loginData.password === storedSignupData.password
-    ) {
-      // Successful login, you can redirect to another page or set an authentication state
-      window.location.href="/home";
-    } else {
-      // Failed login
-      alert('Login Failed');
-    }
-  };
-
-  return (
-    <div className='container'>
-      <div className='front'>
-        <div className='Logo'><img className='Logo-Img' src={Logo} alt='Logo' /></div>
-        <div className="row">
-          <div className="column">
-            <div className="card">
-              <img id='Mang-img' src={ManagerLogo} alt="Manager-Icon" />
-              <p>Manager</p>
-            </div>
-          </div>
-          <div class="column">
-            <div class="card">
-              <img id="Emp-img" src={EmployeLogo} alt="Employee-Icon" />
-              <p>Employee</p>
-            </div>
-          </div>
-       </div>
-     </div>
-     <div className='back'>
-      <div className='Logo'><img className='Logo-Img' src={Logo} alt='Logo' /></div>
-      <form className='formElement'>
-      <label for="email">Email:</label>
-      <input
-        type="text"
-        name="email"
-        value={loginData.email}
-        onChange={handleChange}
-        placeholder="Email"
-      /><br />
-      <label for="password">Password:</label>
-      <input
-        type="password"
-        name="password"
-        value={loginData.password}
-        onChange={handleChange}
-        placeholder="Password"
-      /><br />
-      <button onClick={handleLogin}>Log In</button>
-      </form>
-     </div>
-    </div>
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+          <Card className={`login-card ${isFlipped ? 'flipped' : ''}`}>
+              <Card.Body className={isFlipped ? 'card-back' : 'card-front'}>
+                  <Image src={Logo} alt="Logo" className="d-block mx-auto mb-3" style={{ maxWidth: '100px' }} />
+                  {!isFlipped ? (
+                      <div className="d-flex flex-column align-items-center">
+                          <Button variant="primary" className="mb-2" onClick={() => handleUserTypeSelect('Manager')}>
+                              <Image src={ManagerLogo} alt="Manager" className="mr-2" style={{ width: '24px' }} />
+                              Manager
+                          </Button>
+                          <Button variant="primary" onClick={() => handleUserTypeSelect('Employee')}>
+                              <Image src={EmployeeLogo} alt="Employee" className="mr-2" style={{ width: '24px' }} />
+                              Employee
+                          </Button>
+                      </div>
+                  ) : (
+                    <Form>
+                    <div className='form-group'>
+                    <Form.Group>
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            value={loginData.email}
+                            onChange={handleChange}
+                            placeholder="Enter email"
+                        />
+                    </Form.Group>
+                    </div>
+                    <div className='form-group'>
+                    <Form.Group>
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            value={loginData.password}
+                            onChange={handleChange}
+                            placeholder="Password"
+                        />
+                    </Form.Group>
+                    </div>
+                    <div className='but-login'>
+                    <Button variant="primary" onClick={handleLogin} >
+                        Log In
+                    </Button>
+                    </div>
+                    
+                </Form>
+                  )}
+              </Card.Body>
+          </Card>
+      </Container>
   );
 }
 
