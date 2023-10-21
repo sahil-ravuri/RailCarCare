@@ -12,6 +12,8 @@ function LoginPage() {
     backgroundColor: "cadetblue"
   }
 
+  
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
