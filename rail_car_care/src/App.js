@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './Login';
-import SignUp from './SignUp';
-import Home from './Home';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
+import Home from './components/Home';
+import './App.css';
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
   };
 
   return (
+    <div className='App'>
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -18,6 +20,7 @@ function App() {
         <Route path='/home' element={<Home />} />
       </Routes>
     </Router>
+    </div>
   );
 }
 

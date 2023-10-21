@@ -1,0 +1,40 @@
+.column {
+    width: 20%;
+    padding: 40px;
+}
+
+.row {
+    display: flex;
+    margin: 0 -5px;
+    padding: 20px;
+    padding-left: 20px;
+    text-align: center;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    background-color: #f1f1f1;
+    height: 100px;
+    width: 100px;
+    margin: 5px;
+}
+.formElement{
+    text-align: center;
+}
+.Logo-Img{
+    height: 150px;
+    width: 150px
+}
+#Mang-img, #Emp-img{
+    height: 50px;
+    width: 50px;
+}
+.container{
+    text-align: center;
+    width: 400px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 30px;
+}
