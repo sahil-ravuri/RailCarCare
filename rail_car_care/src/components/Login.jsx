@@ -8,7 +8,7 @@ import './Login.css';
 
 function LoginPage() {
     const [isFlipped, setFlipped] = useState(false);
-    const [selectedUserType, setSelectedUserType] = useState(null);
+    const [, setSelectedUserType] = useState(null);
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
