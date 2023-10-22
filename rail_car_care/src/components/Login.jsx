@@ -5,7 +5,6 @@ import ManagerLogo from '../images/Manager.png';
 import EmployeeLogo from '../images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
-import SignUpPage from './SignUp';
 import { Link } from 'react-router-dom';
 
 function LoginPage() {
