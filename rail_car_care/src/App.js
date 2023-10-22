@@ -20,7 +20,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/manager" element={<ManagerHome />} /> {/* Add the ManagerHome route */}
         </Routes>
       </Router>
     </div>
