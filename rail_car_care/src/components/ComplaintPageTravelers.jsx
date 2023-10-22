@@ -70,7 +70,7 @@ function ComplaintPageTravelers() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="custom-nav">
             <p style={{color:'white', margin:'10px'}}>Are you a manager or an employee?</p>
-            <Link to="/login">
+            <Link to="/">
               <Button>Login</Button>
             </Link>
           </Nav>
