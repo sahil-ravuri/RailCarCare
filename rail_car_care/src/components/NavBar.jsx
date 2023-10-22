@@ -6,11 +6,11 @@ import Button from 'react-bootstrap/Button';
 import Logo from "../images/Logo.PNG";
 import './NavigationBar.css';
 
-function NavigationBar({ onLogout }) {
+function NavBar({ onLogout }) {
 
     return (
-        <Navbar className="navigation" bg="dark"  expand="lg" fixed="top">
-            <Navbar.Brand className="brand"><img className="image-logo" src={Logo} />RailCarCare</Navbar.Brand>
+        <Navbar className="navigation" bg="dark" variant="dark" expand="lg" fixed="top">
+            <Navbar.Brand className="brand"><img className="image-logo" src={Logo} alt='RailCarCareLogo'/>RailCarCare</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="custom-nav"> {/* Use ml-auto to float navigation items right */}
@@ -20,10 +20,9 @@ function NavigationBar({ onLogout }) {
                     <Link to="/profile" className="nav-link">Profile</Link>
                     <Button variant="danger" onClick={onLogout}>Logout</Button>
                 </Nav>
-               
             </Navbar.Collapse>
         </Navbar>
     );
 }
 
-export default NavigationBar;
+export default NavBar;

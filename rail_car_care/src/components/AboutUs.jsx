@@ -1,17 +1,25 @@
-import React from "react";
 
 function AboutUs() {
+  const aboutUsStyle = {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    height: "23%",
+    backgroundColor: "rgb(42, 42, 43)", 
+    color: "#fff",
+    padding: "20px",
+    textAlign: "center",
+  };
+
   return (
-    <div className="about-us">
+    <div  style={aboutUsStyle}>
       <h1>About Us</h1>
       <p>
-        Welcome to our railway services platform. We are committed to providing safe and efficient transportation for both passengers and goods. Our dedicated team ensures the smooth operation and maintenance of railway systems.
+        Welcome to our railway services platform. We are dedicated to providing safe and efficient transportation for passengers and goods, emphasizing safety, reliability, and sustainability.
       </p>
       <p>
-        At our core, we prioritize safety, reliability, and sustainability. Our goal is to connect people and items seamlessly, reducing environmental impact while delivering top-notch service.
-      </p>
-      <p>
-        Whether you're a passenger seeking a comfortable journey or a business relying on efficient freight transport, we are here to meet your needs.
+        Whether you're a passenger or a business, we're here to meet your transportation needs.
       </p>
       <p>
         &copy; {new Date().getFullYear()} Railway Services, Inc. All rights reserved.
@@ -21,3 +29,4 @@ function AboutUs() {
 }
 
 export default AboutUs;
+

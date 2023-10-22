@@ -5,6 +5,7 @@ import ManagerLogo from '../images/Manager.png';
 import EmployeeLogo from '../images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
+import { Link } from 'react-router-dom';
 
 function LoginPage() {
     const [isFlipped, setFlipped] = useState(false);
@@ -95,9 +96,10 @@ function LoginPage() {
                             </div>
                             <div className='form-inputs'><a href='#'>Forget Email/Password?</a></div>
                             <div className="login-btn">
-                                <Button variant="primary" onClick={handleLogin}>
+                                <Button variant="primary" onClick={handleLogin} style={{ margin: '20px' }}>
                                     Log In
                                 </Button>
+                                <Link to='/signup' className="btn btn-primary">Sign Up</Link>
                             </div>
                         </Form>
                     )}
