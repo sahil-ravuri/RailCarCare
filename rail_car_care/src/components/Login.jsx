@@ -34,6 +34,8 @@ function LoginPage() {
     };
 
     const handleLogin = () => {
+
+        console.log(selectedUserType);
         // Here, you can check the login credentials
         // For simplicity, let's assume correct credentials are:
         const correctCredentials = {

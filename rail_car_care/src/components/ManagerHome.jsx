@@ -4,7 +4,7 @@ import AboutUs from "./AboutUs";
 
 function ManagerHome() {
     const handleLogout = () => {
-        window.location.href = "/";
+        window.location.href = "/login";
     };
 
     return (
