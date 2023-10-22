@@ -16,8 +16,8 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path='/complainsPage' element={<ComplaintPageTravelers/>}/>
-          <Route path="/" element={<Login />} />
+          <Route path='/' element={<ComplaintPageTravelers/>}/>
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
           <Route path="/home" element={<Home />} />
           <Route path="/manager" element={<ManagerHome />} />
