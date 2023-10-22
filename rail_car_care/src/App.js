@@ -8,30 +8,19 @@ import './App.css';
 
 function App() {
   const navigateToLogin = () => {
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   return (
-<<<<<<< HEAD
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/manager" element={<ManagerHome />} /> {/* Add the ManagerHome route */}
-        </Routes>
-      </Router>
-=======
     <div className='app-container'>
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path='/manager' element={<ManagerHome />} />
         <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin}/>} />
         <Route path='/home' element={<Home />} />
       </Routes>
     </Router>
->>>>>>> e0615d2f217c12771b1253b92eda60ddcdc9d642
     </div>
   );
 }

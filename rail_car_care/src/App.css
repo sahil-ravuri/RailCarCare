@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-.App {
-  background-color: rgb(243, 248, 248);
-=======
 .app-container {
   background-color: rgb(56, 58, 58);
->>>>>>> e0615d2f217c12771b1253b92eda60ddcdc9d642
   display: flex;
   justify-content: center;
   align-items: center;
