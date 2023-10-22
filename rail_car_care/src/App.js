@@ -8,7 +8,7 @@ import './App.css';
 
 function App() {
   const navigateToLogin = () => {
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   return (
