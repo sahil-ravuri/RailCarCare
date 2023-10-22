@@ -1,6 +1,6 @@
 import React from "react";
 import NavBar from "./NavBar";
-import AboutUs from "./AboutUs"; // Import the AboutUs component
+import AboutUs from "./AboutUs";
 
 function ManagerHome() {
     const handleLogout = () => {
@@ -9,10 +9,9 @@ function ManagerHome() {
 
     return (
         <div>
-            <NavBar onLogout={handleLogout} /> {/* Use the NavigationBar component */}
+            <NavBar onLogout={handleLogout} />
             <div className="top-content">
                 <h2>Dashboard</h2>
-                {/* Add your code to display the list of trains under repair here */}
                 <h2>Train Information</h2>
                 <table>
                     <tr>
@@ -44,7 +43,7 @@ function ManagerHome() {
                     </tr>
                 </table>
             </div>
-            <AboutUs /> {/* Include the AboutUs component at the bottom of the page */}
+            <AboutUs />
         </div>
     );
 }
