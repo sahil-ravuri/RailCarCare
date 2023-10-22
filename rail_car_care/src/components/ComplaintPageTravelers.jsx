@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Form, Button, Col } from 'react-bootstrap';
+import { Container, Form, Button } from 'react-bootstrap';
 import './ComplaintPageTravelers.css';
 import { Link } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ function ComplaintPageTravelers() {
   const [issueType, setIssueType] = useState('');
   const [issueLocation, setIssueLocation] = useState('');
   const [complaintText, setComplaintText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleCoachTypeChange = (e) => {
     setCoachType(e.target.value);
@@ -27,12 +28,33 @@ function ComplaintPageTravelers() {
   };
 
   const handleComplaintSubmit = () => {
-    console.log('Complaint Submitted:', {
+    setSubmitting(true);
+
+    const complaintData = {
       coachType,
       issueType,
       issueLocation,
       complaintText,
-    });
+    };
+
+    if (localStorage) {
+      const existingComplaints = JSON.parse(localStorage.getItem('complaints')) || [];
+
+      existingComplaints.push(complaintData);
+
+      localStorage.setItem('complaints', JSON.stringify(existingComplaints));
+
+      setCoachType('');
+      setIssueType('');
+      setIssueLocation('');
+      setComplaintText('');
+
+      setTimeout(() => {
+        setSubmitting(false);
+      }, 2000);
+    } else {
+      console.error('Local storage is not supported in this browser.');
+    }
   };
 
   return (
@@ -70,13 +92,15 @@ function ComplaintPageTravelers() {
           <Form.Label>Complaint Description:</Form.Label>
           <Form.Control as="textarea" name="complaintText" rows="4" value={complaintText} onChange={handleComplaintTextChange} />
         </Form.Group>
-        <Button variant="primary" onClick={handleComplaintSubmit}>
-          Submit Complaint
+        <Button variant="primary" onClick={handleComplaintSubmit} disabled={submitting}>
+          {submitting ? 'Submitting' : 'Submit Complaint'}
         </Button>
+        {submitting && <p>Submitting...</p>}
       </Form>
-      <section style={{float:'right'}}>
-        <p>Are you a Manager or an Employee?
-        <Link to='/Login'>Login</Link>
+      <section style={{ float: 'right' }}>
+        <p>
+          Are you a Manager or an Employee?{' '}
+          <Link to="/Login">Login</Link>
         </p>
       </section>
     </Container>
