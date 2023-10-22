@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Logo from "../images/Logo.PNG";
 import './NavigationBar.css';
 
-function NavigationBar({ onLogout }) {
+function NavBar({ onLogout }) {
 
     return (
         <Navbar className="navigation" bg="dark" variant="dark" expand="lg" fixed="top">
@@ -26,4 +26,4 @@ function NavigationBar({ onLogout }) {
     );
 }
 
-export default NavigationBar;
+export default NavBar;
