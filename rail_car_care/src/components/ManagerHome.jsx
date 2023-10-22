@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationBar from "./NavigationBar"; // Import the NavigationBar component
+import NavBar from "./NavBar";
 import AboutUs from "./AboutUs"; // Import the AboutUs component
 
 function ManagerHome() {
@@ -9,7 +9,7 @@ function ManagerHome() {
 
     return (
         <div>
-            <NavigationBar onLogout={handleLogout} /> {/* Use the NavigationBar component */}
+            <NavBar onLogout={handleLogout} /> {/* Use the NavigationBar component */}
             <div className="top-content">
                 <h2>Dashboard</h2>
                 {/* Add your code to display the list of trains under repair here */}

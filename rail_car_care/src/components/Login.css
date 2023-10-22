@@ -1,8 +1,7 @@
 /* Main card container */
 .login-card {
-  align-items: center;
-  width: 300px;
-  height: 350px;
+  width: 30%;
+  height: 50%;
   transform-style: preserve-3d; /* This makes sure child elements can have a 3D transform */
   transition: transform 0.5s;
   perspective: 1000px; /* Depth perception for 3D effect */
@@ -32,9 +31,14 @@
   /* Display the back (it's initially hidden) */
   transform: rotateY(180deg);
 }
-.form-group{
-  padding: 15px;
+.form-inputs{
+  text-justify: center;
+  padding: 10px;
 }
-.but-login{
+.login-btn{
   text-align: center;
+}
+.logo-btn{
+  height: 40px;
+  width: 160px;
 }

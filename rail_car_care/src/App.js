@@ -5,6 +5,7 @@ import SignUp from './components/SignUp';
 import Home from './components/Home';
 import ManagerHome from './components/ManagerHome'; // Import the ManagerHome component
 import './App.css';
+import ComplaintPageTravelers from './components/ComplaintPageTravelers';
 
 function App() {
   const navigateToLogin = () => {
@@ -15,6 +16,7 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
+          <Route path='/' element={<ComplaintPageTravelers/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
           <Route path="/home" element={<Home />} />
