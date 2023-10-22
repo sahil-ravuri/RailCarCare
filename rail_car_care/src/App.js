@@ -12,15 +12,15 @@ function App() {
   };
 
   return (
-    <div className='app-container'>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path='/manager' element={<ManagerHome />} />
-        <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin}/>} />
-        <Route path='/home' element={<Home />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/manager" element={<ManagerHome />} /> {/* Add the ManagerHome route */}
+        </Routes>
+      </Router>
     </div>
   );
 }

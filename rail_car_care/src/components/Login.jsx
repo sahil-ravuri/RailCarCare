@@ -28,6 +28,7 @@ function LoginPage() {
     const handleLogin = () => {
         console.log("User tried to login");
         console.log(selectedUserType);
+        window.location.href='/manager';
     };
 
     return (
@@ -37,6 +38,7 @@ function LoginPage() {
                   <Image src={Logo} alt="Logo" className="d-block mx-auto mb-3" style={{ maxWidth: '100px' }} />
                   {!isFlipped ? (
                       <div className="d-flex flex-column align-items-center">
+                        <div className='row'>
                           <Button variant="primary" className="mb-2" onClick={() => handleUserTypeSelect('Manager')}>
                               <Image src={ManagerLogo} alt="Manager" className="mr-2" style={{ width: '24px' }} />
                               Manager
@@ -45,6 +47,7 @@ function LoginPage() {
                               <Image src={EmployeeLogo} alt="Employee" className="mr-2" style={{ width: '24px' }} />
                               Employee
                           </Button>
+                          </div>
                       </div>
                   ) : (
                     <Form>
