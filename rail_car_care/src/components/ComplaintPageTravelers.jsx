@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Navbar, Nav } from 'react-bootstrap';
 import './ComplaintPageTravelers.css';
 import { Link } from 'react-router-dom';
+import Logo from "../images/Logo.PNG";
+import './NavigationBar.css';
 
 function ComplaintPageTravelers() {
   const [coachType, setCoachType] = useState('');
@@ -58,6 +60,22 @@ function ComplaintPageTravelers() {
   };
 
   return (
+    <section>
+ <Navbar bg="dark"  expand="lg" fixed="top">
+        <Navbar.Brand className="brand" style={{color:'white'}}>
+          <img src={Logo} alt="RailCarCareLogo" className="image-logo" />
+          RailCarCare
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="custom-nav">
+            <p style={{color:'white', margin:'10px'}}>Are you a manager or an employee?</p>
+            <Link to="/login">
+              <Button>Login</Button>
+            </Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
     <Container className="complaint-container">
       <Form className="complaint-form">
         <h2 className="mb-4">Raise a Complaint</h2>
@@ -96,14 +114,9 @@ function ComplaintPageTravelers() {
           {submitting ? 'Submitting' : 'Submit Complaint'}
         </Button>
         {submitting && <p>Submitting...</p>}
-      </Form>
-      <section style={{ float: 'right' }}>
-        <p>
-          Are you a Manager or an Employee?{' '}
-          <Link to="/Login">Login</Link>
-        </p>
-      </section>
+      </Form> 
     </Container>
+    </section>
   );
 }
 
