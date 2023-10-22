@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 
 function LoginPage() {
     const [isFlipped, setFlipped] = useState(false);
-    const [, setSelectedUserType] = useState(null);
+    const [selectedUserType, setSelectedUserType] = useState(null);
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
