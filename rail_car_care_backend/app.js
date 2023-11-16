@@ -1,41 +1,65 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Complaint=require('./models/Complaint')
+const cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const app = express();
+// Middleware to parse JSON and form data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+  origin: 'http://localhost:3000'  // Adjust this if your frontend origin is different
+}));
 
-var app = express();
+// MongoDB Atlas connection URI
+const dbURI = 'mongodb+srv://vkNaidu:pv2mVzMnOTG9UaoO@cluster0.69pfljh.mongodb.net/railcarcaredb?retryWrites=true&w=majority';
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// Connect to MongoDB
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// API endpoint to handle form submission
+app.post('/submit-complaint', async (req, res) => {
+  try {
+    const newComplaint = new Complaint({
+      trainNo: req.body.trainNo,
+      coachType: req.body.coachType,
+      issueType: req.body.issueType,
+      issueLocation: req.body.issueLocation,
+      description: req.body.description
+    });
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+    const savedComplaint = await newComplaint.save();
+    res.status(201).json(savedComplaint); // Sending back the saved complaint as a JSON response
+  } catch (error) {
+    console.error('Error submitting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.get('/get-complaints', async (req, res) => {
+  try {
+    const complaints = await Complaint.find();
+    res.json(complaints);
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-module.exports = app;
+// API endpoint to delete a complaint by ID
+app.delete('/delete-complaint/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await Complaint.findByIdAndDelete(id);
+    res.send('Complaint deleted successfully');
+  } catch (error) {
+    console.error('Error deleting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Start the server
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
