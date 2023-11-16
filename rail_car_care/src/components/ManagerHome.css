@@ -1,46 +1,4 @@
-body{
-    background-color: #f2f2f2;
-}
-.manager-home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
-    text-align: center;
-
-  }
-  
-  .navbar {
-    background-color: #333;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-  }
-  
-  .nav-link {
-    color: #fff;
-    text-decoration: none;
-    margin: 0 20px;
-  }
-  
-  .logout-button {
-    background-color: #FF5733;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .dashboard {
-    text-align: center;
-    padding-top: 60px;
-  }
-  
+ 
   table {
     width: 100%;
     border-collapse: collapse;
@@ -57,8 +15,3 @@ body{
     background-color: #f2f2f2;
   }
   
-  @media screen and (max-width: 600px) {
-    .nav-link {
-      margin: 0 10px;
-    }
-  }
