@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'vamsikrishnarolla@gmail.com',
-    pass: 'vk@1Naidu143'
+    pass: 'naaj nzrf klod dxko'
   }
 });
 
@@ -163,7 +163,7 @@ app.post('/request-password-reset', async (req, res) => {
 });
 
 app.post('/reset-password', async(req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const { email, otp, password } = req.body;
   const storedOtp = otpStore[email];
 
   try{
@@ -180,7 +180,7 @@ app.post('/reset-password', async(req, res) => {
   // Remember to hash the new password before storing
   const updatePassword = await User.findOneAndUpdate(
     { email: email },
-    { $set: { password: newPassword } },
+    { $set: { password: password } },
     { new: true }
   );
 

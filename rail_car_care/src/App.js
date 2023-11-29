@@ -6,7 +6,6 @@ import ManagerHome from './components/ManagerHome';
 import './App.css';
 import ComplaintPageTravelers from './components/ComplaintPageTravelers';
 import PasswordResetRequest from './components/PasswordReset';
-import OTPVerification from './components/OTPVerfication';
 
 function App() {
   const navigateToLogin = () => {
@@ -22,7 +21,6 @@ function App() {
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
           <Route path="/manager" element={<ManagerHome />} />
           <Route path="/reset-password" element={<PasswordResetRequest />} />
-          <Route path="/otp-verification" element={<OTPVerification />} />
         </Routes>
       </Router>
     </div>
