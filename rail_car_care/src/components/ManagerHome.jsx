@@ -9,6 +9,7 @@ function ManagerHome() {
   const [complaints, setComplaints] = useState([]);
   
   const handleLogout = () => {
+    localStorage.removeItem('token');
     window.location.href = '/login';
   };
 
