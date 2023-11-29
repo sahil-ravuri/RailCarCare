@@ -7,6 +7,7 @@ import './App.css';
 import ComplaintPageTravelers from './components/ComplaintPageTravelers';
 import PasswordResetRequest from './components/PasswordReset';
 
+
 function App() {
   const navigateToLogin = () => {
     window.location.href = '/';
@@ -20,6 +21,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
           <Route path="/manager" element={<ManagerHome />} />
+          <Route path="/profile" element={<ProfilePage/> }/>
+          <Route path="/orders" element={<Orders/> }/>
           <Route path="/reset-password" element={<PasswordResetRequest />} />
         </Routes>
       </Router>
