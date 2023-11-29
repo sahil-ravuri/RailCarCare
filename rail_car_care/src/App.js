@@ -6,6 +6,8 @@ import ManagerHome from './components/ManagerHome';
 import './App.css';
 import ComplaintPageTravelers from './components/ComplaintPageTravelers';
 import PasswordResetRequest from './components/PasswordReset';
+import ProfilePage from './components/Profile';
+import Orders from './components/Orders';
 
 
 function App() {
