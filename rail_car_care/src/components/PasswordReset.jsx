@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
 import Logo from '../images/Logo.PNG';
 import './Login.css';
@@ -9,29 +9,69 @@ const PasswordResetRequest = () => {
   const [formData, setFormData] = useState({
     email: '',
     otp: '',
-    password: '',
+    newPassword: '',
+    confirmPassword: '',
   });
+  const [otpTimer, setOtpTimer] = useState(60); // 1 minutes in seconds
+  const [otpExpired, setOtpExpired] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const handleEmail = (e) =>{
-    const emailSent = e.target.value
-    setEmail(emailSent)
+  useEffect(() => {
+    let timer;
+
+    if (isFlipped && !otpExpired) {
+      timer = setInterval(() => {
+        setOtpTimer((prevTimer) => {
+          if (prevTimer === 0) {
+            clearInterval(timer);
+            setOtpExpired(true);
+            setFlipped(false)
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isFlipped, otpExpired]);
+
+  const handleEmail = (e) => {
+    const emailSent = e.target.value;
+    setEmail(emailSent);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Send request to backend to generate and send OTP
-    setFlipped(true)
+
+    const newErrors = {};
+
+    // Email validation
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Invalid email address';
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    setFlipped(true);
+    setOtpExpired(false);
+    setOtpTimer(60);
+
     try {
       const response = await fetch('http://localhost:3001/request-password-reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 'email': email }),
+        body: JSON.stringify({ email }),
       });
 
       if (!response.ok) {
-        // Handle non-successful status codes (e.g., display an error message)
         console.error(`Error: ${response.status} - ${response.statusText}`);
         return;
       }
@@ -47,18 +87,33 @@ const PasswordResetRequest = () => {
 
   const handleReset = async (e) => {
     e.preventDefault();
-    // Send OTP and new password to backend for verification and reset
+
+    const newErrors = {};
+
+    // New password validation
+    if (!formData.newPassword.trim()) {
+      newErrors.newPassword = 'New password is required';
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
 
     const response = await fetch('http://localhost:3001/reset-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        email: formData.email,
+        otp: formData.otp,
+        password: formData.newPassword,
+      }),
     });
 
     if (!response.ok) {
-      // Handle non-successful status codes (e.g., display an error message)
       console.error(`Error: ${response.status} - ${response.statusText}`);
       return;
     }
@@ -83,12 +138,14 @@ const PasswordResetRequest = () => {
                     placeholder="Enter email"
                   />
                 </Form.Group>
+                {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
               </div>
               <div className="login-btn">
                 <Button variant="primary" onClick={handleSubmit} style={{ margin: '20px' }}>
                   Send OTP
                 </Button>
               </div>
+              {otpExpired && <div style={{ color: 'red' }}>OTP expired. Please request a new OTP.</div>}
             </Form>
           ) : (
             <Form>
@@ -97,9 +154,8 @@ const PasswordResetRequest = () => {
                   <Form.Control
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Enter email"
+                    value={email}
+                    readOnly
                   />
                 </Form.Group>
               </div>
@@ -113,16 +169,20 @@ const PasswordResetRequest = () => {
                     placeholder="Enter OTP"
                   />
                 </Form.Group>
+                {!otpExpired && <div>
+                    OTP expires In: {Math.floor(otpTimer / 60)}:{otpTimer % 60}
+                  </div>}
               </div>
               <div className='form-inputs'>
                 <Form.Group>
                   <Form.Control
                     type="password"
-                    name="password"
-                    value={formData.password}
+                    name="newPassword"
+                    value={formData.newPassword}
                     onChange={handleChange}
-                    placeholder="Enter password"
+                    placeholder="Enter new password"
                   />
+                  {errors.newPassword && <p style={{ color: 'red' }}>{errors.newPassword}</p>}
                 </Form.Group>
               </div>
               <div className="login-btn">
@@ -139,4 +199,3 @@ const PasswordResetRequest = () => {
 };
 
 export default PasswordResetRequest;
-
