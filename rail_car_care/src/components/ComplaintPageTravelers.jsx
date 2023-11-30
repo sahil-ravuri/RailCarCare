@@ -1,87 +1,133 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button, Navbar, Nav } from 'react-bootstrap';
 import './ComplaintPageTravelers.css';
 import { Link } from 'react-router-dom';
-import Logo from "../images/Logo.PNG";
+import Logo from '../images/Logo.PNG';
 import './NavigationBar.css';
 
 function ComplaintPageTravelers() {
-  const [coachType, setCoachType] = useState('');
-  const [issueType, setIssueType] = useState('');
-  const [issueLocation, setIssueLocation] = useState('');
-  const [complaintText, setComplaintText] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleCoachTypeChange = (e) => {
-    setCoachType(e.target.value);
+  const initialFormData = {
+    trainNo: '',
+    coachType: '',
+    issueType: '',
+    issueLocation: '',
+    description: '',
   };
 
-  const handleIssueTypeChange = (e) => {
-    setIssueType(e.target.value);
+  const [formData, setFormData] = useState(initialFormData);
+  const [submissionStatus, setSubmissionStatus] = useState('');
+  const [formErrors, setFormErrors] = useState({});
+  const [showSubmitAnotherButton, setShowSubmitAnotherButton] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    // Clear the specific field error when the user types
+    setFormErrors({
+      ...formErrors,
+      [name]: '',
+    });
   };
 
-  const handleIssueLocationChange = (e) => {
-    setIssueLocation(e.target.value);
+  const validateForm = () => {
+    const newFormErrors = {};
+
+    // Check if required fields are empty
+    if (!formData.trainNo) {
+      newFormErrors.trainNo = 'Enter the Train Number';
+    }
+    if (!formData.coachType) {
+      newFormErrors.coachType = 'Select Coach Type is required';
+    }
+
+    if (!formData.issueType) {
+      newFormErrors.issueType = 'Select Issue Type is required';
+    }
+
+    if (!formData.issueLocation) {
+      newFormErrors.issueLocation = 'Select Issue Location is required';
+    }
+
+    // Update state with the new error messages
+    setFormErrors(newFormErrors);
+
+    // Return true if there are no errors
+    return Object.values(newFormErrors).every((error) => !error);
   };
 
-  const handleComplaintTextChange = (e) => {
-    setComplaintText(e.target.value);
-  };
+  const handleComplaintSubmit = async (e) => {
+    e.preventDefault();
 
-  const handleComplaintSubmit = () => {
-    setSubmitting(true);
+    if (!validateForm()) {
+      return;
+    }
 
-    const complaintData = {
-      coachType,
-      issueType,
-      issueLocation,
-      complaintText,
-    };
+    const response = await fetch('http://localhost:3001/submit-complaint', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-    if (localStorage) {
-      const existingComplaints = JSON.parse(localStorage.getItem('complaints')) || [];
-
-      existingComplaints.push(complaintData);
-
-      localStorage.setItem('complaints', JSON.stringify(existingComplaints));
-
-      setCoachType('');
-      setIssueType('');
-      setIssueLocation('');
-      setComplaintText('');
-
-      setTimeout(() => {
-        setSubmitting(false);
-      }, 2000);
-    } else {
-      console.error('Local storage is not supported in this browser.');
+    if (response.ok) {
+      console.log('Complaint raised successfully.');
+      setSubmissionStatus('success');
+      setShowSubmitAnotherButton(true);
+      setFormData(initialFormData);
     }
   };
 
-  return (
-    <section>
- <Navbar bg="dark"  expand="lg" fixed="top">
-        <Navbar.Brand className="brand" style={{color:'white'}}>
-          <img src={Logo} alt="RailCarCareLogo" className="image-logo" />
-          RailCarCare
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="custom-nav">
-            <p style={{color:'white', margin:'10px'}}>Are you a manager or an employee?</p>
-            <Link to="/login">
-              <Button>Login</Button>
-            </Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    <Container className="complaint-container">
+  const handleSubmitAnother = () => {
+    setSubmissionStatus('');
+    setShowSubmitAnotherButton(false);
+  };
+
+  const renderContent = () => {
+    if (submissionStatus === 'success') {
+      return (
+        <div>
+          <h2 style={{color: "white"}}>Complaint submitted successfully!</h2>
+          {showSubmitAnotherButton && (
+            <Button variant="success" onClick={handleSubmitAnother}>
+              Submit Another Complaint
+            </Button>
+          )}
+        </div>
+      );
+    }
+
+    return (
       <Form className="complaint-form">
         <h2 className="mb-4">Raise a Complaint</h2>
+        {formErrors.trainNo && <p style={{ color: 'red' }}>{formErrors.trainNo}</p>}
+        {formErrors.coachType && <p style={{ color: 'red' }}>{formErrors.coachType}</p>}
+        {formErrors.issueType && <p style={{ color: 'red' }}>{formErrors.issueType}</p>}
+        {formErrors.issueLocation && <p style={{ color: 'red' }}>{formErrors.issueLocation}</p>}
+        <Form.Group>
+          <Form.Label>Train No:</Form.Label>
+          <Form.Control
+            name="trainNo"
+            type='text'
+            value={formData.trainNo}
+            onChange={handleChange}
+            isInvalid={!!formErrors.trainNo}
+          ></Form.Control>
+        </Form.Group>
         <Form.Group>
           <Form.Label>Select Coach Type:</Form.Label>
-          <Form.Control as="select" name="coachType" value={coachType} onChange={handleCoachTypeChange}>
+          <Form.Control
+            as="select"
+            name="coachType"
+            value={formData.coachType}
+            onChange={handleChange}
+            isInvalid={!!formErrors.coachType}
+          >
             <option value="">Select Coach Type</option>
             <option value="First Class">First Class</option>
             <option value="Economy Class">Economy Class</option>
@@ -90,7 +136,13 @@ function ComplaintPageTravelers() {
         </Form.Group>
         <Form.Group>
           <Form.Label>Select Issue Type:</Form.Label>
-          <Form.Control as="select" name="issueType" value={issueType} onChange={handleIssueTypeChange}>
+          <Form.Control
+            as="select"
+            name="issueType"
+            value={formData.issueType}
+            onChange={handleChange}
+            isInvalid={!!formErrors.issueType}
+          >
             <option value="">Select Issue Type</option>
             <option value="Cleanliness">Cleanliness</option>
             <option value="Comfort">Comfort</option>
@@ -99,7 +151,13 @@ function ComplaintPageTravelers() {
         </Form.Group>
         <Form.Group>
           <Form.Label>Select Issue Location:</Form.Label>
-          <Form.Control as="select" name="issueLocation" value={issueLocation} onChange={handleIssueLocationChange}>
+          <Form.Control
+            as="select"
+            name="issueLocation"
+            value={formData.issueLocation}
+            onChange={handleChange}
+            isInvalid={!!formErrors.issueLocation}
+          >
             <option value="">Select Issue Location</option>
             <option value="Seat">Seat</option>
             <option value="Restroom">Restroom</option>
@@ -107,15 +165,40 @@ function ComplaintPageTravelers() {
           </Form.Control>
         </Form.Group>
         <Form.Group>
-          <Form.Label>Complaint Description:</Form.Label>
-          <Form.Control as="textarea" name="complaintText" rows="4" value={complaintText} onChange={handleComplaintTextChange} />
+          <Form.Label>Complaint Description (Optional):</Form.Label>
+          <Form.Control
+            as="textarea"
+            name="description"
+            rows="4"
+            value={formData.description}
+            onChange={handleChange}
+          />
         </Form.Group>
-        <Button variant="primary" onClick={handleComplaintSubmit} disabled={submitting}>
-          {submitting ? 'Submitting' : 'Submit Complaint'}
+        <Button variant="primary" onClick={handleComplaintSubmit}>
+          Submit
         </Button>
-        {submitting && <p>Submitting...</p>}
-      </Form> 
-    </Container>
+      </Form>
+    );
+  };
+
+  return (
+    <section>
+      <Navbar bg="dark" expand="lg" fixed="top">
+        <Navbar.Brand className="brand" style={{ color: 'white' }}>
+          <img src={Logo} alt="RailCarCareLogo" className="image-logo" />
+          RailCarCare
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="custom-nav">
+            <p style={{ color: 'white', margin: '10px' }}>Are you a manager or an employee?</p>
+            <Link to="/login">
+              <Button>Login</Button>
+            </Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      <Container className="complaint-container" style={{backgroundColor:"black"}}>{renderContent()}</Container>
     </section>
   );
 }

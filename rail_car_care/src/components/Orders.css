@@ -1,0 +1,145 @@
+/* Orders.css */
+
+.orders-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .orders-header h1 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  button {
+    background-color: #0052cc;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #003c9d;
+  }
+  
+  .orders-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .orders-filters input[type="text"],
+  .orders-filters select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .orders-table th, .orders-table td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .orders-table th {
+    background-color: #0052cc;
+    color: white;
+  }
+  
+  .orders-table tbody tr:nth-child(odd) {
+    background-color: #f4f7fa;
+  }
+  
+  .orders-table tbody tr:hover {
+    background-color: #e2e6ea;
+  }
+  
+  .orders-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .orders-pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #e9ecef;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .orders-pagination button.active {
+    background-color: #0052cc;
+    color: white;
+  }
+  
+  /* Additional styles for specific components can be added below */
+  /* Existing styles */
+/* ... (rest of your existing CSS) */
+
+/* New styles for status colors */
+.status.pending {
+    color: orange;
+  }
+  
+  .status.delivered {
+    color: green;
+  }
+  
+  .status.canceled {
+    color: red;
+  }
+  
+  /* Styles for edit and delete buttons */
+  .edit-btn,
+  .delete-btn {
+    margin-left: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+  }
+  
+  .edit-btn {
+    background-color: #ffc107; /* Bootstrap warning color */
+    color: black;
+  }
+  
+  .edit-btn:hover {
+    background-color: #e0a800;
+  }
+  
+  .delete-btn {
+    background-color: #dc3545; /* Bootstrap danger color */
+    color: white;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c82333;
+  }
+  
+  /* Add more styles as needed */
+  
