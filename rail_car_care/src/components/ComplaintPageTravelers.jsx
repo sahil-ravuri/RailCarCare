@@ -16,7 +16,7 @@ function ComplaintPageTravelers() {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [submissionStatus, setSubmissionStatus] = useState('');
+  const [isSubmit, setSubmitted] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [showSubmitAnotherButton, setShowSubmitAnotherButton] = useState(false);
 
@@ -77,108 +77,15 @@ function ComplaintPageTravelers() {
 
     if (response.ok) {
       console.log('Complaint raised successfully.');
-      setSubmissionStatus('success');
+      setSubmitted(true);
       setShowSubmitAnotherButton(true);
       setFormData(initialFormData);
     }
   };
 
   const handleSubmitAnother = () => {
-    setSubmissionStatus('');
+    setSubmitted(false);
     setShowSubmitAnotherButton(false);
-  };
-
-  const renderContent = () => {
-    if (submissionStatus === 'success') {
-      return (
-        <div>
-          <h2 style={{color: "white"}}>Complaint submitted successfully!</h2>
-          {showSubmitAnotherButton && (
-            <Button variant="success" onClick={handleSubmitAnother}>
-              Submit Another Complaint
-            </Button>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <Form className="complaint-form">
-        <h2 className="mb-4">Raise a Complaint</h2>
-        {formErrors.trainNo && <p style={{ color: 'red' }}>{formErrors.trainNo}</p>}
-        {formErrors.coachType && <p style={{ color: 'red' }}>{formErrors.coachType}</p>}
-        {formErrors.issueType && <p style={{ color: 'red' }}>{formErrors.issueType}</p>}
-        {formErrors.issueLocation && <p style={{ color: 'red' }}>{formErrors.issueLocation}</p>}
-        <Form.Group>
-          <Form.Label>Train No:</Form.Label>
-          <Form.Control
-            name="trainNo"
-            type='text'
-            value={formData.trainNo}
-            onChange={handleChange}
-            isInvalid={!!formErrors.trainNo}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Select Coach Type:</Form.Label>
-          <Form.Control
-            as="select"
-            name="coachType"
-            value={formData.coachType}
-            onChange={handleChange}
-            isInvalid={!!formErrors.coachType}
-          >
-            <option value="">Select Coach Type</option>
-            <option value="First Class">First Class</option>
-            <option value="Economy Class">Economy Class</option>
-            <option value="Sleeper Class">Sleeper Class</option>
-          </Form.Control>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Select Issue Type:</Form.Label>
-          <Form.Control
-            as="select"
-            name="issueType"
-            value={formData.issueType}
-            onChange={handleChange}
-            isInvalid={!!formErrors.issueType}
-          >
-            <option value="">Select Issue Type</option>
-            <option value="Cleanliness">Cleanliness</option>
-            <option value="Comfort">Comfort</option>
-            <option value="Service">Service</option>
-          </Form.Control>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Select Issue Location:</Form.Label>
-          <Form.Control
-            as="select"
-            name="issueLocation"
-            value={formData.issueLocation}
-            onChange={handleChange}
-            isInvalid={!!formErrors.issueLocation}
-          >
-            <option value="">Select Issue Location</option>
-            <option value="Seat">Seat</option>
-            <option value="Restroom">Restroom</option>
-            <option value="Aisle">Aisle</option>
-          </Form.Control>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Complaint Description (Optional):</Form.Label>
-          <Form.Control
-            as="textarea"
-            name="description"
-            rows="4"
-            value={formData.description}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Button variant="primary" onClick={handleComplaintSubmit}>
-          Submit
-        </Button>
-      </Form>
-    );
   };
 
   return (
@@ -198,7 +105,92 @@ function ComplaintPageTravelers() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Container className="complaint-container" style={{backgroundColor:"black"}}>{renderContent()}</Container>
+      <Container className="complaint-container" style={{backgroundColor:"black"}}>
+         {!isSubmit ? (
+          <Form className="complaint-form">
+            <h2 className="mb-4">Raise a Complaint</h2>
+            <Form.Group>
+              <Form.Control
+                name="trainNo"
+                type='text'
+                value={formData.trainNo}
+                onChange={handleChange}
+                isInvalid={!!formErrors.trainNo}
+                placeholder='Train No'
+              ></Form.Control>
+            </Form.Group><br />
+            {formErrors.trainNo && <p style={{ color: 'red' }}>{formErrors.trainNo}</p>}
+            <Form.Group>
+              <Form.Control
+                as="select"
+                name="coachType"
+                value={formData.coachType}
+                onChange={handleChange}
+                isInvalid={!!formErrors.coachType}
+              >
+                <option value="">Select Coach Type</option>
+                <option value="First Class">First Class</option>
+                <option value="Economy Class">Economy Class</option>
+                <option value="Sleeper Class">Sleeper Class</option>
+              </Form.Control>
+            </Form.Group>
+            {formErrors.coachType && <p style={{ color: 'red' }}>{formErrors.coachType}</p>}
+            <Form.Group>
+              <Form.Control
+                as="select"
+                name="issueType"
+                value={formData.issueType}
+                onChange={handleChange}
+                isInvalid={!!formErrors.issueType}
+              >
+                <option value="">Select Issue Type</option>
+                <option value="Cleanliness">Cleanliness</option>
+                <option value="Comfort">Comfort</option>
+                <option value="Service">Service</option>
+              </Form.Control>
+            </Form.Group>
+            {formErrors.issueType && <p style={{ color: 'red' }}>{formErrors.issueType}</p>}
+            <Form.Group>
+              <Form.Control
+                as="select"
+                name="issueLocation"
+                value={formData.issueLocation}
+                onChange={handleChange}
+                isInvalid={!!formErrors.issueLocation}
+              >
+                <option value="">Select Issue Location</option>
+                <option value="Seat">Seat</option>
+                <option value="Restroom">Restroom</option>
+                <option value="Aisle">Aisle</option>
+              </Form.Control>
+            </Form.Group>
+            {formErrors.issueLocation && <p style={{ color: 'red' }}>{formErrors.issueLocation}</p>}
+            <Form.Group>
+              <Form.Control
+                as="textarea"
+                name="description"
+                rows="4"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder='Complaint Description (Optional)'
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={handleComplaintSubmit}>
+              Submit
+            </Button>
+          </Form>
+         ) : (
+            <div>
+              <h2 style={{ color: "white" }}>Complaint submitted successfully!</h2>
+              {showSubmitAnotherButton && (
+                <Button variant="success" onClick={handleSubmitAnother}>
+                  Submit Another Complaint
+                </Button>
+              )}
+            </div>
+
+         )}
+      </Container>
     </section>
   );
 }

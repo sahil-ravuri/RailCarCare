@@ -1,7 +1,7 @@
 /* Main card container */
 .login-card {
   width: 30%;
-  height: 50%;
+  height: 65%;
   transform-style: preserve-3d; /* This makes sure child elements can have a 3D transform */
   transition: transform 0.5s;
   perspective: 1000px; /* Depth perception for 3D effect */
