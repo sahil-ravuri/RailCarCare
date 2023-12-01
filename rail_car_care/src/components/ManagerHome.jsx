@@ -7,6 +7,8 @@ import './ManagerHome.css';
 
 function ManagerHome() {
   const [complaints, setComplaints] = useState([]);
+  const [repairs, setRepairs] = useState([]);
+  const [managerName, setManagerName] = useState('Manager Name');
   
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -31,6 +33,26 @@ function ManagerHome() {
     fetchComplaints();
   }, []);
 
+  const fetchRepairs = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/get-repairs');
+      if (response.ok) {
+        const data = await response.json();
+        setRepairs(data);
+      } else {
+        console.error('Failed to fetch repairs');
+      }
+    } catch (error) {
+      console.error('Error fetching repairs:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComplaints();
+    fetchRepairs();
+  }, []);
+
+
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:3001/delete-complaint/${id}`, {
@@ -50,6 +72,7 @@ function ManagerHome() {
   return (
     <div>
       <NavBar onLogout={handleLogout} />
+      <div className="manager-name">{managerName}</div>
       <div className="top-content" style={{backgroundColor: "white", padding: "20px"}}>
         <h2>Dashboard</h2>
         <h2>Complaints Information</h2>
@@ -81,6 +104,26 @@ function ManagerHome() {
             ))}
           </tbody>
         </table>
+        
+
+<h3>Progress of Repairs</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Train No</th>
+      <th>Progress</th>
+    </tr>
+  </thead>
+  <tbody>
+    {repairs.map((repair) => (
+      <tr key={repair.trainId}>
+        <td>{repair.trainId}</td>
+        <td>{`${repair.progress}%`}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
       </div>
       <AboutUs />
     </div>
