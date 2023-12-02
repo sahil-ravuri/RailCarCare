@@ -5,8 +5,10 @@ import ManagerLogo from '../images/Manager.png';
 import EmployeeLogo from '../images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [isFlipped, setFlipped] = useState(false);
     const [selectedUserType, setSelectedUserType] = useState(null);
     const [errors, setErrors] = useState({});
@@ -75,7 +77,19 @@ function LoginPage() {
   
           if (responseData.message === 'Logged successfully') {
               localStorage.setItem('token', responseData.token);
-              window.location.href = '/manager';
+              navigate('/manager')
+              /*const reply = await fetch('http://localhost:3001/manager',{
+                method: 'GET',
+                header: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token')
+                }
+              });
+              if(reply.ok){
+                navigate('/manager');
+              }else{
+                console.log('You are not authorized')
+              } */
           } else {
               console.log('Login failed. Server response:', responseData);
               setMesg(responseData.message);
