@@ -89,7 +89,8 @@ function ManagerHome() {
       <section className="manager-name">{managerName}</section>
       <section style={{ backgroundColor: "white", padding: "20px" }}>
         <h2>Dashboard</h2>
-        <h2>Complaints Information</h2>
+        <section style={{ marginRight: "20px" }}>
+        <h3>Complaints Information</h3>
         <section className="top-content">
           {complaintsLoading ? (
             <p>Loading complaints...</p>
@@ -123,9 +124,10 @@ function ManagerHome() {
               </tbody>
             </table>
           )}
-        </section>
+          </section>
+          </section>
+          <section>
         <h3>Progress of Repairs</h3>
-        <section className="top-content">
           {repairsLoading ? (
             <p>Loading repairs...</p>
           ) : (
@@ -148,8 +150,8 @@ function ManagerHome() {
               </tbody>
             </table>
           )}
+          </section>
         </section>
-      </section>
       <AboutUs />
     </main>
   );

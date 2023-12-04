@@ -3,7 +3,6 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
   margin-top: 20px;
-  display: inline-block;
   margin-right: 20px;
 }
 
@@ -43,18 +42,23 @@ li {
   margin-top: 20px;
 }
 
-table {
-  margin-top: 20px;
-}
-
 ul {
   padding-left: 20px;
+  display: inline-block;
 }
 
 td {
   font-weight: bold;
 }
 
-.top-content {
-  display: inline-flex;
+.top-content-right{
+  float: right;
+  margin: auto;
+  padding-right: 10px;
+}
+
+.top-content-left{
+  float: left;
+  padding-left: 10px;
+  margin: auto;
 }
