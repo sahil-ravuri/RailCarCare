@@ -10,7 +10,6 @@ const PasswordResetRequest = () => {
     email: '',
     otp: '',
     newPassword: '',
-    confirmPassword: '',
   });
   const [otpTimer, setOtpTimer] = useState(60); // 1 minutes in seconds
   const [otpExpired, setOtpExpired] = useState(false);

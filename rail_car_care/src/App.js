@@ -8,6 +8,7 @@ import ComplaintPageTravelers from './components/ComplaintPageTravelers';
 import PasswordResetRequest from './components/PasswordReset';
 import ProfilePage from './components/Profile';
 import Orders from './components/Orders';
+import Complaints from './components/Complaints';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/manager" element={<ManagerHome />} />
           <Route path="/profile" element={<ProfilePage/> }/>
           <Route path="/orders" element={<Orders/> }/>
+          <Route path="/complaints" element={<Complaints/> }/>
           <Route path="/reset-password" element={<PasswordResetRequest />} />
         </Routes>
       </Router>
