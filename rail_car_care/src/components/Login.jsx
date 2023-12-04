@@ -1,18 +1,20 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
 import Logo from '../images/Logo.PNG';
 import ManagerLogo from '../images/Manager.png';
 import EmployeeLogo from '../images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [isFlipped, setFlipped] = useState(false);
     const [selectedUserType, setSelectedUserType] = useState(null);
     const [errors, setErrors] = useState({});
     const [mesg, setMesg] = useState('');
     const [loginData, setLoginData] = useState({
-        email: '',
+        empId: '',
         password: '',
         role: '',
     });
@@ -25,7 +27,6 @@ function LoginPage() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLoginData({ ...loginData, [name]: value });
-
         setErrors({
           ...errors,
           [name]: '',
@@ -36,10 +37,10 @@ function LoginPage() {
         const newErrors = {};
     
         // Email validation
-        if (!loginData.email.trim()) {
-          newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(loginData.email)) {
-          newErrors.email = 'Invalid email address';
+        if (!loginData.empId.trim()) {
+          newErrors.empId = 'Employee Id is required';
+        } else if (loginData.empId.length !== 6) {
+          newErrors.empId = 'Invalid employee id address';
         }
         if (!loginData.password.trim()) {
             newErrors.password = 'Password is required';
@@ -75,7 +76,20 @@ function LoginPage() {
   
           if (responseData.message === 'Logged successfully') {
               localStorage.setItem('token', responseData.token);
-              window.location.href = '/manager';
+              localStorage.setItem('user', loginData.empId);
+              navigate('/manager')
+              /*const reply = await fetch('http://localhost:3001/manager',{
+                method: 'GET',
+                header: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token')
+                }
+              });
+              if(reply.ok){
+                navigate('/manager');
+              }else{
+                console.log('You are not authorized')
+              } */
           } else {
               console.log('Login failed. Server response:', responseData);
               setMesg(responseData.message);
@@ -104,17 +118,17 @@ function LoginPage() {
                     ) : (
                         <>{mesg && <p style={{ color: 'red', textJustify:'center' }}>{mesg}</p>}
                         <Form>
-                            <div className='form-inputs'>
+                        <div className='form-inputs'>
                                 <Form.Group>
                                     <Form.Control
-                                        type="email"
-                                        name="email"
-                                        value={loginData.email}
+                                        type="text"
+                                        name="empId"
+                                        value={loginData.empId}
                                         onChange={handleChange}
-                                        placeholder="Enter email"
+                                        placeholder="Enter Employee Id"
                                     />
                                 </Form.Group>
-                                {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+                                {errors.empId && <p style={{ color: 'red' }}>{errors.empId}</p>}
                             </div>
                             <div className='form-inputs'>
                                 <Form.Group>
