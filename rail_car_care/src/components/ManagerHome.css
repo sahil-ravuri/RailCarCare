@@ -52,24 +52,20 @@ th {
   }
 }
 
-@media screen and (max-width: 576px) {
+@media screen and (min-width: 800px) {
   .top-content {
-    max-height: 200px;
+    min-height: 200px;
   }
 
   .train-stats {
-    max-height: 100px;
+    min-height: 100px;
   }
 
   .table-container {
-    max-height: 100px;
+    min-height: 100px;
   }
 
   table {
     font-size: 12px;
   }
-}
-
-Carousel{
-  border-radius: 15px;
 }

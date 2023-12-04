@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form, Button, Card, CardBody, Row, Col ,Modal , ModalBody, ModalHeader, ModalTitle , ModalFooter, Carousel} from 'react-bootstrap';
+import { Form, Button, Card, CardBody, Row, Col, Modal, ModalBody, ModalHeader, ModalTitle, ModalFooter, Carousel } from 'react-bootstrap';
 import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import './ManagerHome.css';
@@ -35,23 +35,23 @@ function ManagerHome() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch('http://localhost:3001/get-employees',{
+      const response = await fetch('http://localhost:3001/get-employees', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({'user': localStorage.getItem('user')})
+        body: JSON.stringify({ 'user': localStorage.getItem('user') })
       });
       if (response.ok) {
         const data = await response.json();
         setEmployees(data);
-      }else{
+      } else {
         console.error('Failed to fetch employees');
       }
-    }catch(error){
+    } catch (error) {
       console.error('Error fetching employees:', error);
     }
-    
+
   };
 
   useEffect(() => {
@@ -104,8 +104,8 @@ function ManagerHome() {
   };
 
   const handleFilter = () => {
-    const filteredEmployees = employees.filter((employee) => 
-        employee[filterColumn].toLowerCase().includes(filterValue.toLowerCase()) 
+    const filteredEmployees = employees.filter((employee) =>
+      employee[filterColumn].toLowerCase().includes(filterValue.toLowerCase())
     );
     setEmployees(filteredEmployees);
   };
@@ -186,117 +186,115 @@ function ManagerHome() {
   return (
     <div>
       <NavBar onLogout={handleLogout} />
-
-      <Carousel>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src="https://via.placeholder.com/800x400"
-            alt="First slide"
-          />
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src="https://via.placeholder.com/800x400"
-            alt="Second slide"
-          />
-        </Carousel.Item>
-      </Carousel>
-
-        <Row>
-          <Col md={6}>
+      <section className='carousel'>
+        <Carousel>
+          <Carousel.Item>
+            <img
+              src="https://via.placeholder.com/800x400"
+              alt="First slide"
+            />
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              src="https://via.placeholder.com/800x400"
+              alt="Second slide"
+            />
+          </Carousel.Item>
+        </Carousel>
+      </section>
+      <Row>
+        <Col md={6}>
           <Card>
             <CardBody>
               <h2>Employee Status</h2>
-            <div className="filter">
-          <label>
-            Filter By:
-            <select
-              value={filterColumn}
-              onChange={(e) => setFilterColumn(e.target.value)}
-            >
-              <option value="empId">Employee Id</option>
-              <option value="empFirstName">Employee Name</option>
-              <option value="department">Employee Department</option>
-              <option value="status">Employee Status</option>
-            </select>
-          </label>
-          <input
-            type="text"
-            placeholder="Filter value..."
-            value={filterValue}
-            onChange={(e) => setFilterValue(e.target.value)}
-          />
-          <button onClick={handleFilter}>Filter</button>
-          <button onClick={handleClearFilter}>Clear Filter</button>
-        </div>
-        <div className='table-container'>
-        {sortedEmployees.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th onClick={() => handleSortAndSearch('empId')}>Employee Id</th>
-                <th onClick={() => handleSortAndSearch('empFirstName')}>Employee Name</th>
-                <th onClick={() => handleSortAndSearch('department')}>Department</th>
-                <th onClick={() => handleSortAndSearch('status')}>Status</th>
-                <th>Assign</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedEmployees.map((employee, index) => (
-                <tr key={employee._id}>
-                  <td>{employee.empId}</td>
-                  <td>{employee.empFirstName}</td>
-                  <td>{employee.department}</td>
-                  <td>{employee.status}</td>
-                  <td>
-                    <Button variant="primary" onClick={() => handleAssign(employee.empId)}>
-                      Assign
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No items found.</p>
-        )}
-      </div>
+              <div className="filter">
+                <label>
+                  Filter By:
+                  <select
+                    value={filterColumn}
+                    onChange={(e) => setFilterColumn(e.target.value)}
+                  >
+                    <option value="empId">Employee Id</option>
+                    <option value="empFirstName">Employee Name</option>
+                    <option value="department">Employee Department</option>
+                    <option value="status">Employee Status</option>
+                  </select>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Filter value..."
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
+                />
+                <button onClick={handleFilter}>Filter</button>
+                <button onClick={handleClearFilter}>Clear Filter</button>
+              </div>
+              <div className='table-container'>
+                {sortedEmployees.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th onClick={() => handleSortAndSearch('empId')}>Employee Id</th>
+                        <th onClick={() => handleSortAndSearch('empFirstName')}>Employee Name</th>
+                        <th onClick={() => handleSortAndSearch('department')}>Department</th>
+                        <th onClick={() => handleSortAndSearch('status')}>Status</th>
+                        <th>Assign</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedEmployees.map((employee, index) => (
+                        <tr key={employee._id}>
+                          <td>{employee.empId}</td>
+                          <td>{employee.empFirstName}</td>
+                          <td>{employee.department}</td>
+                          <td>{employee.status}</td>
+                          <td>
+                            <Button variant="primary" onClick={() => handleAssign(employee.empId)}>
+                              Assign
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No items found.</p>
+                )}
+              </div>
             </CardBody>
           </Card>
-          </Col>
-          <Col md={6}>
+        </Col>
+        <Col md={6}>
           <Card>
             <CardBody>
-            <h2>Train Statistics</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Train No</th>
-              <th>Total Repairs</th>
-              <th>Assigned Repairs</th>
-              <th>Pending Repairs</th>
-              <th>Completed Repairs</th>
-            </tr>
-          </thead>
-          <tbody>
-            {trainStatistics.map((trainStat) => (
-              <tr key={trainStat.trainNo}>
-                <td>{trainStat.trainNo}</td>
-                <td>{trainStat.totalRepairs}</td>
-                <td>{trainStat.assignedRepairs}</td>
-                <td>{trainStat.pendingRepairs}</td>
-                <td>{trainStat.completedRepairs}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <h2>Train Statistics</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Train No</th>
+                    <th>Total Repairs</th>
+                    <th>Assigned Repairs</th>
+                    <th>Pending Repairs</th>
+                    <th>Completed Repairs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trainStatistics.map((trainStat) => (
+                    <tr key={trainStat.trainNo}>
+                      <td>{trainStat.trainNo}</td>
+                      <td>{trainStat.totalRepairs}</td>
+                      <td>{trainStat.assignedRepairs}</td>
+                      <td>{trainStat.pendingRepairs}</td>
+                      <td>{trainStat.completedRepairs}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </CardBody>
           </Card>
-          </Col>
-        </Row>
-        <Modal show={showAssignModal} onHide={handleAssignModalClose}>
+        </Col>
+      </Row>
+      <Modal show={showAssignModal} onHide={handleAssignModalClose}>
         <ModalHeader closeButton>
           <ModalTitle>Assign Task</ModalTitle>
         </ModalHeader>
@@ -307,7 +305,7 @@ function ManagerHome() {
               <Form.Control
                 name="assignId"
                 type="text"
-                value= {assignId}
+                value={assignId}
                 readOnly
               />
             </Form.Group>
@@ -316,7 +314,7 @@ function ManagerHome() {
               <Form.Control
                 name="empId"
                 type="text"
-                value= {selectedEmployee}
+                value={selectedEmployee}
                 readOnly
               />
             </Form.Group>
