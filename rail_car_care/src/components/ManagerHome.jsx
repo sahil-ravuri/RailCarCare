@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Card, CardBody, Row, Col } from 'react-bootstrap';
+import {Form, Button, Card, CardBody, Row, Col ,Modal , ModalBody, ModalHeader, ModalTitle , ModalFooter} from 'react-bootstrap';
 import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import './ManagerHome.css';
@@ -8,11 +8,21 @@ import { useNavigate } from 'react-router-dom';
 
 function ManagerHome() {
   const navigate = useNavigate();
+  const [assignId, setAssignId] = useState('');
+  const [employees, setEmployees] = useState([]);
   const [complaints, setComplaints] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-  const [filterColumn, setFilterColumn] = useState('trainNo');
+  const [filterColumn, setFilterColumn] = useState('empId');
   const [filterValue, setFilterValue] = useState('');
   const [trainStatistics, setTrainStatistics] = useState([]);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [assignmentDetails, setAssignmentDetails] = useState({
+    assignmentId: '',
+    employeeId: '',
+    trainNo: '',
+
+  });
 
   const handleLogout = async () => {
     const response = await fetch('http://localhost:3001/logout');
@@ -22,6 +32,31 @@ function ManagerHome() {
       navigate('/login');
     }
   };
+
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/get-employees',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({'user': localStorage.getItem('user')})
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEmployees(data);
+      }else{
+        console.error('Failed to fetch employees');
+      }
+    }catch(error){
+      console.error('Error fetching employees:', error);
+    }
+    
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
   const fetchComplaints = async () => {
     try {
@@ -49,51 +84,36 @@ function ManagerHome() {
     fetchComplaints();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3001/delete-complaint/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        console.log('Complaint deleted successfully.');
-        fetchComplaints(); // Refresh the complaints after deletion
-      } else {
-        console.error('Failed to delete complaint');
-      }
-    } catch (error) {
-      console.error('Error deleting complaint:', error);
-    }
-  };
 
   const handleSortAndSearch = (key) => {
     const direction = sortConfig.key === key && sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
     setSortConfig({ key, direction });
 
     // Perform search on sorted data
-    const sortedAndSearchedComplaints = [...complaints].sort((a, b) => {
+    const sortedAndSearchedComplaints = [...employees].sort((a, b) => {
       if (direction === 'ascending') {
         return a[key] > b[key] ? 1 : -1;
       } else {
         return a[key] < b[key] ? 1 : -1;
       }
-    }).filter((complaint) =>
-      complaint[filterColumn].toLowerCase().includes(filterValue.toLowerCase())
+    }).filter((employee) =>
+      employee[filterColumn].toLowerCase().includes(filterValue.toLowerCase())
     );
 
     setComplaints(sortedAndSearchedComplaints);
   };
 
   const handleFilter = () => {
-    const filteredComplaints = complaints.filter((complaint) =>
-      complaint[filterColumn].toLowerCase().includes(filterValue.toLowerCase())
+    const filteredEmployees = employees.filter((employee) => 
+        employee[filterColumn].toLowerCase().includes(filterValue.toLowerCase()) 
     );
-    setComplaints(filteredComplaints);
+    setEmployees(filteredEmployees);
   };
 
   const handleClearFilter = () => {
-    setFilterColumn('trainNo');
+    setFilterColumn('empId');
     setFilterValue('');
-    fetchComplaints();
+    fetchEmployees();
   };
 
   const calculateTrainStatistics = () => {
@@ -113,13 +133,55 @@ function ManagerHome() {
     calculateTrainStatistics();
   }, [complaints]);
 
-  const sortedComplaints = [...complaints].sort((a, b) => {
+  const sortedEmployees = [...employees].sort((a, b) => {
     if (sortConfig.direction === 'ascending') {
       return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
     } else {
       return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
     }
   });
+
+  const handleAssign = (employee) => {
+    setSelectedEmployee(employee);
+    setShowAssignModal(true);
+    const assign = generateRandomAssignmentId();
+    setAssignId(assign);
+  };
+
+  const handleAssignModalClose = () => {
+    setShowAssignModal(false);
+    setSelectedEmployee(null);
+    setAssignmentDetails({
+      assignmentId: '',
+      // Reset other assignment details here
+    });
+  };
+
+  const generateRandomAssignmentId = () => {
+    // Generate a random 6-digit assignment ID
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+  const handleAssignSubmit = () => {
+
+    // Save the assignment details to the Assignments table (Assuming you have a separate Assignments page)
+    // You can send a POST request to your server with the assignment details.
+
+    // For example:
+    // const response = await fetch('http://localhost:3001/create-assignment', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     assignmentId: randomAssignmentId,
+    //     // Include other assignment details from the state
+    //   }),
+    // });
+
+    // Close the modal and reset state
+    handleAssignModalClose();
+  };
 
   return (
     <div>
@@ -128,7 +190,7 @@ function ManagerHome() {
           <Col md={6}>
           <Card>
             <CardBody>
-              <h2>Complaints</h2>
+              <h2>Employee Status</h2>
             <div className="filter">
           <label>
             Filter By:
@@ -136,11 +198,10 @@ function ManagerHome() {
               value={filterColumn}
               onChange={(e) => setFilterColumn(e.target.value)}
             >
-              <option value="trainNo">Train No</option>
-              <option value="coachType">Coach Type</option>
-              <option value="issueType">Issue Type</option>
-              <option value="issueLocation">Issue Location</option>
-              <option value="description">Description</option>
+              <option value="empId">Employee Id</option>
+              <option value="empFirstName">Employee Name</option>
+              <option value="department">Employee Department</option>
+              <option value="status">Employee Status</option>
             </select>
           </label>
           <input
@@ -153,29 +214,27 @@ function ManagerHome() {
           <button onClick={handleClearFilter}>Clear Filter</button>
         </div>
         <div className='table-container'>
-        {sortedComplaints.length > 0 ? (
+        {sortedEmployees.length > 0 ? (
           <table>
             <thead>
               <tr>
-                <th onClick={() => handleSortAndSearch('trainNo')}>Train No</th>
-                <th onClick={() => handleSortAndSearch('coachType')}>CoachType</th>
-                <th onClick={() => handleSortAndSearch('issueType')}>Issue Type</th>
-                <th onClick={() => handleSortAndSearch('issueLocation')}>Issue Location</th>
-                <th onClick={() => handleSortAndSearch('description')}>Description</th>
-                <th>Action</th>
+                <th onClick={() => handleSortAndSearch('empId')}>Employee Id</th>
+                <th onClick={() => handleSortAndSearch('empFirstName')}>Employee Name</th>
+                <th onClick={() => handleSortAndSearch('department')}>Department</th>
+                <th onClick={() => handleSortAndSearch('status')}>Status</th>
+                <th>Assign</th>
               </tr>
             </thead>
             <tbody>
-              {sortedComplaints.map((complaint, index) => (
-                <tr key={complaint._id}>
-                  <td>{complaint.trainNo}</td>
-                  <td>{complaint.coachType}</td>
-                  <td>{complaint.issueType}</td>
-                  <td>{complaint.issueLocation}</td>
-                  <td>{complaint.description}</td>
+              {sortedEmployees.map((employee, index) => (
+                <tr key={employee._id}>
+                  <td>{employee.empId}</td>
+                  <td>{employee.empFirstName}</td>
+                  <td>{employee.department}</td>
+                  <td>{employee.status}</td>
                   <td>
-                    <Button variant="danger" onClick={() => handleDelete(complaint._id)}>
-                      Delete
+                    <Button variant="primary" onClick={() => handleAssign(employee.empId)}>
+                      Assign
                     </Button>
                   </td>
                 </tr>
@@ -219,6 +278,41 @@ function ManagerHome() {
           </Card>
           </Col>
         </Row>
+        <Modal show={showAssignModal} onHide={handleAssignModalClose}>
+        <ModalHeader closeButton>
+          <ModalTitle>Assign Task</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Form>
+            <Form.Group controlId="formAssignmentId">
+              <Form.Label>Assignment ID</Form.Label>
+              <Form.Control
+                name="assignId"
+                type="text"
+                value= {assignId}
+                readOnly
+              />
+            </Form.Group>
+            <Form.Group controlId="formAssignmentId">
+              <Form.Label>Employee ID</Form.Label>
+              <Form.Control
+                name="empId"
+                type="text"
+                value= {selectedEmployee}
+                readOnly
+              />
+            </Form.Group>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="secondary" onClick={handleAssignModalClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleAssignSubmit}>
+            Save Assignment
+          </Button>
+        </ModalFooter>
+      </Modal>
       <AboutUs />
     </div>
   );

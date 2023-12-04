@@ -4,11 +4,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Complaint=require('./models/Complaint');
 const User=require('./models/User');
+const TrainDetail = require('./models/TrainDetails')
+const Train=require('./models/Trains');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const session = require('express-session')
 
 
 const app = express();
@@ -19,11 +22,17 @@ app.use(cors({
   origin: 'http://localhost:3000'  // Adjust this if your frontend origin is different
 }));
 
+app.use(session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'vamsikrishnarolla@gmail.com',
-    pass: 'naaj nzrf klod dxko'
+    user: process.env.USER,
+    pass: process.env.PASS
   }
 });
 
@@ -62,6 +71,29 @@ app.get('/get-complaints', async (req, res) => {
   }
 });
 
+app.post('/get-employees', async (req, res) => {
+  const { user } = req.body;
+  try {
+    const employees = await User.find({manager: {$eq : user}})
+    res.json(employees);
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/get-train', async (req, res) => {
+  const { trainNo } = req.body;
+  try {
+    const trainType = await Train.findOne({trainNo: {$eq : trainNo}})
+    const trainDetails = await TrainDetail.findOne({traintype: {$eq: trainType.traintype}});
+    res.json(trainDetails);
+  } catch (error) {
+    console.error('Error fetching trains:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 // API endpoint to delete a complaint by ID
 app.delete('/delete-complaint/:id', async (req, res) => {
   const { id } = req.params;
@@ -76,9 +108,9 @@ app.delete('/delete-complaint/:id', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const { email, password, role } = req.body;
+  const { empId, password, role } = req.body;
 
-  const user = await User.findOne({ email, role });
+  const user = await User.findOne({ empId, role });
 
   if (!user) {
       return res.status(400).json({ message: 'User not found' });
@@ -92,24 +124,24 @@ app.post('/login', async (req, res) => {
   }
 
   // Generate JWT Token
-  const token = jwt.sign({ id: user._id, role: user.role }, 'vkNaidu', { expiresIn: '1h' });
+  const secret = process.env.JWT_SECRET
+  const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: '1h' });
+  req.session.user = user;
 
   // Successful login
   return res.status(200).json({ message: 'Logged successfully', token });
 });
 
-
-
-
 const authenticate = (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
-
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const secret = process.env.JWT_SECRET;
+  console.log('this is authenticator')
   if (!token) {
     return res.status(401).send('Access denied. No token provided.');
   }
 
   try {
-    const decoded = jwt.verify(token, 'group10');
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
     next();
   } catch (ex) {
@@ -123,7 +155,7 @@ app.use('/manager', authenticate);// Applying middleware to /manager route
 let otpStore = {};
 
 app.post('/request-password-reset', async (req, res) => {
-  const email = req.body.email;
+  const {email} = req.body;
   const otp = crypto.randomBytes(3).toString('hex').toUpperCase();
   
   otpStore[email] = { otp, expires: new Date().getTime() + 60 }; // 1 minutes expiry
@@ -183,6 +215,18 @@ app.post('/reset-password', async(req, res) => {
   delete otpStore[email];
 
   res.send('Password reset successfully');
+});
+
+app.get('/logout', (req, res) => {
+  console.log('Inside logout')
+  req.session.destroy((err) => {
+      if (err) {
+          res.status(400).json({message:'Logout failed.'})
+          console.error(err);
+      } else {
+          res.status(200).json({ success: true });
+      }
+  });
 });
 
 
