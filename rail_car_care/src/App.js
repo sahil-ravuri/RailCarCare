@@ -28,12 +28,11 @@ function App() {
           <Route path="/profile" element={<ProfilePage/> }/>
           <Route path="/orders" element={<Orders/> }/>
           <Route path="/assignments" element={<Assignments/> }/>
-          <Route path="/reset-password" element={<PasswordResetRequest />} />
           <Route path="/complaints" element={<Complaints/> }/>
+          <Route path="/reset-password" element={<PasswordResetRequest />} />
         </Routes>
       </Router>
     </div>
   );
 }
-
 export default App;
