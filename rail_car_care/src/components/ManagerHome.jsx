@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form, Button, Card, CardBody, Row, Col ,Modal , ModalBody, ModalHeader, ModalTitle , ModalFooter} from 'react-bootstrap';
+import {Form, Button, Card, CardBody, Row, Col ,Modal , ModalBody, ModalHeader, ModalTitle , ModalFooter, Carousel} from 'react-bootstrap';
 import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import './ManagerHome.css';
@@ -186,6 +186,24 @@ function ManagerHome() {
   return (
     <div>
       <NavBar onLogout={handleLogout} />
+
+      <Carousel>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src="https://via.placeholder.com/800x400"
+            alt="First slide"
+          />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src="https://via.placeholder.com/800x400"
+            alt="Second slide"
+          />
+        </Carousel.Item>
+      </Carousel>
+
         <Row>
           <Col md={6}>
           <Card>

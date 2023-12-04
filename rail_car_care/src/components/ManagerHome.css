@@ -1,34 +1,75 @@
-.top-content{
+
+.table-container {
+  max-height: 500px; /* Adjust the maximum height as needed */
+  overflow-y: auto;
+}
+
+.top-content {
   max-height: 500px;
   overflow-y: auto;
+  /* Additional styling as needed */
 }
-.train-stats{
-  max-height: 250x;
+
+.train-stats {
+  max-height: 250px;
   overflow-y: auto;
+  /* Additional styling as needed */
 }
-.top-content{
-  border-radius: 5px;
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
-.table-container {
-  max-height: 250px; /* Adjust the maximum height as needed */
-  overflow-y: auto;
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px) {
+  .top-content {
+    max-height: 300px;
+  }
+
+  .train-stats {
+    max-height: 150px;
+  }
+
+  .table-container {
+    max-height: 150px;
+  }
 
   table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
+    font-size: 14px;
   }
-  
-  th, td {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ddd;
-  }
-  
-  th {
-    background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 576px) {
+  .top-content {
+    max-height: 200px;
   }
 
+  .train-stats {
+    max-height: 100px;
+  }
 
-  
+  .table-container {
+    max-height: 100px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+}
+
+Carousel{
+  border-radius: 15px;
+}
