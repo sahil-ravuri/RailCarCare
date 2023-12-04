@@ -1,64 +1,41 @@
+.top-content {
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 10px; /* Increase border-radius for a trendier look */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+}
+
+.train-stats {
+  max-height: 250px;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+  max-height: 250px;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  margin-top: 20px;
-  margin-right: 20px;
 }
 
 th, td {
-  padding: 12px;
+  padding: 15px; /* Increase padding for a more comfortable look */
   text-align: center;
   border: 1px solid #ddd;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #f8f9fa;
+  color: #007bff;
 }
 
-.manager-name {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-h3 {
-  margin-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  display: inline-block;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
-.logout-button {
-  margin-top: 20px;
-}
-
-ul {
-  padding-left: 20px;
-  display: inline-block;
-}
-
-td {
-  font-weight: bold;
-}
-
-.top-content-right{
-  float: right;
-  margin: auto;
-  padding-right: 10px;
-}
-
-.top-content-left{
-  float: left;
-  padding-left: 10px;
-  margin: auto;
+tr:hover {
+  background-color: #f5f5f5;
 }
