@@ -1,10 +1,10 @@
 
 function AboutUs() {
   const aboutUsStyle = {
-    position: "absolute",
     bottom: 0,
     left: 0,
     width: "100%",
+    position: 'fixed',
     backgroundColor: "rgb(42, 42, 43)", 
     color: "#fff",
     fontSize:"0.75rem",

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Card, CardBody, Row, Col, Modal, ModalBody, ModalHeader, ModalTitle, ModalFooter, Carousel } from 'react-bootstrap';
+import { Form, Button, Card, CardBody, Row, Col, Modal, ModalBody, ModalHeader, ModalTitle, ModalFooter, Carousel, Image } from 'react-bootstrap';
 import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
+import Img1 from '../images/Train-Repair-1.jpg';
+import Img2 from "../images/Train-Repair-2.jpg";
 
 function ManagerHome() {
   const navigate = useNavigate();
@@ -192,27 +194,20 @@ function ManagerHome() {
         <section className='carousel'>
         <Carousel>
           <Carousel.Item>
-            <img
-              src="./images/Train-Repair-1.jpg"
-              alt="First slide"
-            />
+            <Image className='img-slide' src={Img1} alt='First slide'/>
           </Carousel.Item>
           <Carousel.Item>
-            <img
-              src="./images/Train-Repair-2.jpg"
-              alt="Second slide"
-            />
+            <Image className='img-slide' src={Img2} alt='Second slide' />
           </Carousel.Item>
         </Carousel>
       </section>
-      <Row>
+      <Row className='row'>
         <Col md={6}>
           <Card>
             <CardBody>
               <h2>Employee Status</h2>
               <div className="filter">
                 <label>
-                  Filter By:
                   <select
                     value={filterColumn}
                     onChange={(e) => setFilterColumn(e.target.value)}
@@ -224,6 +219,7 @@ function ManagerHome() {
                   </select>
                 </label>
                 <input
+                  style={{height: '42px', width: '20%'}}
                   type="text"
                   placeholder="Filter value..."
                   value={filterValue}
