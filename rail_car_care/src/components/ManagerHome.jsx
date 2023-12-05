@@ -184,19 +184,19 @@ function ManagerHome() {
   };
 
   return (
-    <div>
+    <section>
       <NavBar onLogout={handleLogout} />
       <section className='carousel'>
         <Carousel>
           <Carousel.Item>
             <img
-              src="https://via.placeholder.com/800x400"
+              src="./images/Train-Repair-1.jpg"
               alt="First slide"
             />
           </Carousel.Item>
           <Carousel.Item>
             <img
-              src="https://via.placeholder.com/800x400"
+              src="./images/Train-Repair-2.jpg"
               alt="Second slide"
             />
           </Carousel.Item>
@@ -330,7 +330,7 @@ function ManagerHome() {
         </ModalFooter>
       </Modal>
       <AboutUs />
-    </div>
+      </section>
   );
 }
 
