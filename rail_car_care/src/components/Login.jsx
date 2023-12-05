@@ -77,7 +77,7 @@ function LoginPage() {
           if (responseData.message === 'Logged successfully') {
               localStorage.setItem('token', responseData.token);
               localStorage.setItem('user', loginData.empId);
-              navigate('/manager');
+              navigate('/home');
               /*const reply = await fetch('http://localhost:3001/manager',{
                 method: 'GET',
                 header: {

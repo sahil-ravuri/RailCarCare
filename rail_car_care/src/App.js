@@ -24,7 +24,7 @@ function App() {
           <Route path='/' element={<ComplaintPageTravelers/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
-          <Route path="/manager" element={<ManagerHome />} />
+          <Route path="/home" element={<ManagerHome />} />
           <Route path="/profile" element={<ProfilePage/> }/>
           <Route path="/orders" element={<Orders/> }/>
           <Route path="/complaints" element={<Complaints/> }/>
