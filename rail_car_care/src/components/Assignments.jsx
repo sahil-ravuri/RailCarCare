@@ -149,7 +149,7 @@ const AssignOrder = () => {
   return (
     <main>
       <NavBar onLogout={handleLogout} />
-      <div style={{ backgroundColor: "white", padding: "20px" }}>
+      <div style={{ backgroundColor: "white", margin: "20px", borderRadius:"5px" }}>
         <h2>Assign Order</h2>
         <select value={selectedOrder} onChange={(e) => setSelectedOrder(e.target.value)}>
           <option value="">Select Order</option>
