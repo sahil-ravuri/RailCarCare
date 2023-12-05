@@ -29,6 +29,8 @@ function ManagerHome() {
     if (response.ok) {
       console.log('Inside logout');
       localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
+     localStorage.removeItem('user'); 
       navigate('/login');
     }
   };
@@ -156,7 +158,7 @@ function ManagerHome() {
       // Reset other assignment details here
     });
   };
-
+  const userRole = localStorage.getItem('userRole');
   const generateRandomAssignmentId = () => {
     // Generate a random 6-digit assignment ID
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -183,10 +185,11 @@ function ManagerHome() {
     handleAssignModalClose();
   };
 
-  return (
-    <section>
-      <NavBar onLogout={handleLogout} />
-      <section className='carousel'>
+  return (<section>
+    <NavBar onLogout={handleLogout} />
+    {userRole === 'manager' ? (
+      <div>
+        <section className='carousel'>
         <Carousel>
           <Carousel.Item>
             <img
@@ -330,8 +333,59 @@ function ManagerHome() {
         </ModalFooter>
       </Modal>
       <AboutUs />
+      </div>
+      ) : (
+        <div>
+        <section className='carousel'>
+        <Carousel>
+          <Carousel.Item>
+            <img
+              src="./images/Train-Repair-1.jpg"
+              alt="First slide"
+            />
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              src="./images/Train-Repair-2.jpg"
+              alt="Second slide"
+            />
+          </Carousel.Item>
+        </Carousel>
       </section>
-  );
+        <Row>
+        <Col md={6}>
+        <Card>
+          <CardBody>
+            <h2>Train Statistics</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Train No</th>
+                  <th>Total Repairs</th>
+                  <th>Assigned Repairs</th>
+                  <th>Pending Repairs</th>
+                  <th>Completed Repairs</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trainStatistics.map((trainStat) => (
+                  <tr key={trainStat.trainNo}>
+                    <td>{trainStat.trainNo}</td>
+                    <td>{trainStat.totalRepairs}</td>
+                    <td>{trainStat.assignedRepairs}</td>
+                    <td>{trainStat.pendingRepairs}</td>
+                    <td>{trainStat.completedRepairs}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardBody>
+        </Card>
+      </Col>
+      </Row>
+      </div>
+  )}
+  </section> );
 }
 
 export default ManagerHome;
