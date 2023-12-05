@@ -77,7 +77,6 @@ function LoginPage() {
           if (responseData.message === 'Logged successfully') {
               localStorage.setItem('token', responseData.token);
               localStorage.setItem('user', loginData.empId);
-              localStorage.setItem('userRole', loginData.role);
               navigate('/manager')
               /*const reply = await fetch('http://localhost:3001/manager',{
                 method: 'GET',
@@ -91,6 +90,7 @@ function LoginPage() {
               }else{
                 console.log('You are not authorized')
               } */
+              localStorage.setItem('userRole', loginData.role);
           } else {
               console.log('Login failed. Server response:', responseData);
               setMesg(responseData.message);
