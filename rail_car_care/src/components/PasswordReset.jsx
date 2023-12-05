@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo.PNG';
 import './Login.css';
 
 const PasswordResetRequest = () => {
-  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const [isFlipped, setFlipped] = useState(false);
   const [formData, setFormData] = useState({
+    empId: '',
     email: '',
     otp: '',
-    newPassword: '',
+    password: '',
   });
   const [otpTimer, setOtpTimer] = useState(60); // 1 minutes in seconds
   const [otpExpired, setOtpExpired] = useState(false);
@@ -34,20 +36,20 @@ const PasswordResetRequest = () => {
     return () => clearInterval(timer);
   }, [isFlipped, otpExpired]);
 
-  const handleEmail = (e) => {
-    const emailSent = e.target.value;
-    setEmail(emailSent);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
 
     // Email validation
-    if (!email.trim()) {
+    if (!formData.empId.trim()) {
+      newErrors.empId = 'Employee Id is required';
+    }else if(formData.empId.length != 6){
+      newErrors.empId = 'Employee Id requires 6 digits';
+    }
+    if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Invalid email address';
     }
 
@@ -67,7 +69,7 @@ const PasswordResetRequest = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({'empId': formData.empId, 'email': formData.email}),
       });
 
       if (!response.ok) {
@@ -87,11 +89,15 @@ const PasswordResetRequest = () => {
   const handleReset = async (e) => {
     e.preventDefault();
 
+    console.log(formData)
+
     const newErrors = {};
 
     // New password validation
-    if (!formData.newPassword.trim()) {
-      newErrors.newPassword = 'New password is required';
+    if (!formData.password.trim()) {
+      newErrors.password = 'New password is required';
+    }else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     setErrors(newErrors);
@@ -105,11 +111,7 @@ const PasswordResetRequest = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        email: formData.email,
-        otp: formData.otp,
-        password: formData.newPassword,
-      }),
+      body: JSON.stringify(formData),
     });
 
     if (!response.ok) {
@@ -117,7 +119,7 @@ const PasswordResetRequest = () => {
       return;
     }
 
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   return (
@@ -130,10 +132,22 @@ const PasswordResetRequest = () => {
               <div className='form-inputs'>
                 <Form.Group>
                   <Form.Control
+                    type="text"
+                    name="empId"
+                    value={formData.empId}
+                    onChange={handleChange}
+                    placeholder="Enter Employee Id"
+                  />
+                </Form.Group>
+                {errors.empId && <p style={{ color: 'red' }}>{errors.empId}</p>}
+              </div>
+              <div className='form-inputs'>
+                <Form.Group>
+                  <Form.Control
                     type="email"
                     name="email"
-                    value={email}
-                    onChange={handleEmail}
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="Enter email"
                   />
                 </Form.Group>
@@ -151,9 +165,19 @@ const PasswordResetRequest = () => {
               <div className='form-inputs'>
                 <Form.Group>
                   <Form.Control
+                    type="text"
+                    name="empId"
+                    value={formData.empId}
+                    readOnly
+                  />
+                </Form.Group>
+              </div>
+              <div className='form-inputs'>
+                <Form.Group>
+                  <Form.Control
                     type="email"
                     name="email"
-                    value={email}
+                    value={formData.email}
                     readOnly
                   />
                 </Form.Group>
@@ -176,12 +200,12 @@ const PasswordResetRequest = () => {
                 <Form.Group>
                   <Form.Control
                     type="password"
-                    name="newPassword"
-                    value={formData.newPassword}
+                    name="password"
+                    value={formData.password}
                     onChange={handleChange}
                     placeholder="Enter new password"
                   />
-                  {errors.newPassword && <p style={{ color: 'red' }}>{errors.newPassword}</p>}
+                  {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
                 </Form.Group>
               </div>
               <div className="login-btn">

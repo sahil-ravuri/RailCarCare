@@ -10,12 +10,32 @@ function ComplaintPageTravelers() {
   const initialFormData = {
     trainNo: '',
     coachType: '',
-    issueType: '',
-    issueLocation: '',
-    description: '',
+    compartment: '',
+    location: '',
+    serviceType: '',
+    issue: '',
   };
 
-  const [formData, setFormData] = useState(initialFormData);
+  const [trainDetails, setTrainDetails] = useState({
+    traintype: '',
+    coach: [{
+      type: '',
+      compartment: ['']
+    }],
+    location: [''],
+    service: [{
+      type: '',
+      issue: ['']
+    }]
+  });
+  const [formData, setFormData] = useState({
+    trainNo: '',
+    coachType: '',
+    compartment: '',
+    location: '',
+    serviceType: '',
+    issue: '',
+  });
   const [isSubmit, setSubmitted] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [showSubmitAnotherButton, setShowSubmitAnotherButton] = useState(false);
@@ -41,16 +61,25 @@ function ComplaintPageTravelers() {
     if (!formData.trainNo) {
       newFormErrors.trainNo = 'Enter the Train Number';
     }
+
     if (!formData.coachType) {
       newFormErrors.coachType = 'Select Coach Type is required';
     }
 
-    if (!formData.issueType) {
-      newFormErrors.issueType = 'Select Issue Type is required';
+    if (!formData.compartment) {
+      newFormErrors.compartment = 'Select Compartment is required';
     }
 
-    if (!formData.issueLocation) {
-      newFormErrors.issueLocation = 'Select Issue Location is required';
+    if (!formData.location) {
+      newFormErrors.location = 'Select location is required';
+    }
+
+    if (!formData.serviceType) {
+      newFormErrors.serviceType = 'Select Service Type is required';
+    }
+
+    if (!formData.issue) {
+      newFormErrors.issue = 'Select Issue is required';
     }
 
     // Update state with the new error messages
@@ -88,6 +117,22 @@ function ComplaintPageTravelers() {
     setShowSubmitAnotherButton(false);
   };
 
+  const getTrain = async (e) => {  
+    const { name, value } = e.target;
+    if (value.length === 5) {
+      formData.trainNo = value;
+      const data = await fetch('http://localhost:3001/get-train', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'trainNo': formData.trainNo })
+      });
+      const trainData = await data.json();
+      setTrainDetails(trainData);
+    }
+  }
+
   return (
     <section>
       <Navbar bg="dark" expand="lg" fixed="top">
@@ -114,7 +159,7 @@ function ComplaintPageTravelers() {
                 name="trainNo"
                 type='text'
                 value={formData.trainNo}
-                onChange={handleChange}
+                onChange={getTrain}
                 isInvalid={!!formErrors.trainNo}
                 placeholder='Train No'
               ></Form.Control>
@@ -128,43 +173,83 @@ function ComplaintPageTravelers() {
                 onChange={handleChange}
                 isInvalid={!!formErrors.coachType}
               >
-                <option value="">Select Coach Type</option>
-                <option value="First Class">First Class</option>
-                <option value="Economy Class">Economy Class</option>
-                <option value="Sleeper Class">Sleeper Class</option>
+                <option>Select Coach Type</option>
+                {(trainDetails.coach).map((coach) => (
+                  <option key={coach} value={coach.type}>
+                    {coach.type}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
             {formErrors.coachType && <p style={{ color: 'red' }}>{formErrors.coachType}</p>}
             <Form.Group>
               <Form.Control
                 as="select"
-                name="issueType"
-                value={formData.issueType}
+                name="compartment"
+                value={formData.compartment}
                 onChange={handleChange}
-                isInvalid={!!formErrors.issueType}
+                isInvalid={!!formErrors.compartment}
               >
-                <option value="">Select Issue Type</option>
-                <option value="Cleanliness">Cleanliness</option>
-                <option value="Comfort">Comfort</option>
-                <option value="Service">Service</option>
+                <option>Select Compartment</option>
+                {(trainDetails.coach[0].compartment).map((coach) => (
+                  <option key={coach} value={coach}>
+                    {coach}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
-            {formErrors.issueType && <p style={{ color: 'red' }}>{formErrors.issueType}</p>}
+            {formErrors.compartment && <p style={{ color: 'red' }}>{formErrors.compartment}</p>}
             <Form.Group>
               <Form.Control
                 as="select"
-                name="issueLocation"
-                value={formData.issueLocation}
+                name="location"
+                value={formData.location}
                 onChange={handleChange}
-                isInvalid={!!formErrors.issueLocation}
+                isInvalid={!!formErrors.location}
               >
-                <option value="">Select Issue Location</option>
-                <option value="Seat">Seat</option>
-                <option value="Restroom">Restroom</option>
-                <option value="Aisle">Aisle</option>
+                <option>Select Location</option>
+                {(trainDetails.location).map((coach) => (
+                  <option key={coach} value={coach}>
+                    {coach}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
-            {formErrors.issueLocation && <p style={{ color: 'red' }}>{formErrors.issueLocation}</p>}
+            {formErrors.location && <p style={{ color: 'red' }}>{formErrors.location}</p>}
+            <Form.Group>
+              <Form.Control
+                as="select"
+                name="serviceType"
+                value={formData.serviceType}
+                onChange={handleChange}
+                isInvalid={!!formErrors.serviceType}
+              >
+                <option>Select Service type</option>
+                {(trainDetails.service).map((coach) => (
+                  <option key={coach} value={coach.type}>
+                    {coach.type}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+            {formErrors.serviceType && <p style={{ color: 'red' }}>{formErrors.serviceType}</p>}
+            <Form.Group>
+              <Form.Control
+                as="select"
+                name="issue"
+                value={formData.issue}
+                onChange={handleChange}
+                isInvalid={!!formErrors.issue}
+              >
+                <option>Select Issue</option>
+                {(trainDetails.service[0].issue).map((coach) => (
+                  <option key={coach} value={coach}>
+                    {coach}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+            {formErrors.issue && <p style={{ color: 'red' }}>{formErrors.issue}</p>}
             <Form.Group>
               <Form.Control
                 as="textarea"
