@@ -9,6 +9,7 @@ import PasswordResetRequest from './components/PasswordReset';
 import ProfilePage from './components/Profile';
 import Orders from './components/Orders';
 import Complaints from './components/Complaints';
+import Assignments from './components/Assignments';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage/> }/>
           <Route path="/orders" element={<Orders/> }/>
           <Route path="/complaints" element={<Complaints/> }/>
+          <Route path="/assignments" element={<Assignments/> }/>
           <Route path="/reset-password" element={<PasswordResetRequest />} />
         </Routes>
       </Router>

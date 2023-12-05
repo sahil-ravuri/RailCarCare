@@ -10,7 +10,7 @@ function NavBar({ onLogout }) {
 
     return (
         <Navbar className="navigation" bg="dark" variant="dark" expand="lg" fixed="top">
-            <Navbar.Brand className="brand"><img className="image-logo" src={Logo} alt='RailCarCareLogo'/>RailCarCare</Navbar.Brand>
+            <Navbar.Brand to="/" className="brand"><img className="image-logo" src={Logo} alt='RailCarCareLogo'/>RailCarCare</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="custom-nav"> {/* Use ml-auto to float navigation items right */}

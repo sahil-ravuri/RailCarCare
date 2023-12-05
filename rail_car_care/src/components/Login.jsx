@@ -90,6 +90,7 @@ function LoginPage() {
               }else{
                 console.log('You are not authorized')
               } */
+              localStorage.setItem('userRole', loginData.role);
           } else {
               console.log('Login failed. Server response:', responseData);
               setMesg(responseData.message);
