@@ -33,8 +33,8 @@ const AssignedTasks = () => {
       <h2>Assigned Tasks</h2>
       <Row>
         {assignedTasks.map((task) => (
-          <Col key={task._id} md={4} sm={6} xs={12} className="mb-4">
-            <Card className="assigned-task-card bg-white text-dark">
+          <Col key={task._id} md={4} sm={6} xs={12}>
+            <Card className="card">
               <Card.Body>
                 <Card.Title>{task.taskName}</Card.Title>
                 <Card.Text>

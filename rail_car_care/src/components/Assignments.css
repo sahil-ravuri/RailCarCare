@@ -29,3 +29,7 @@
   button:hover {
     background-color: #0056b3;
 }
+  .card{
+    margin: auto;
+background-color: #fff;
+}
