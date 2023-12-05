@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './Profile.css';
+import NavBar from './NavBar';
+import AboutUs from './AboutUs';
 
 function ProfilePage() {
   const [profileImage, setProfileImage] = useState(null);
@@ -9,6 +11,7 @@ function ProfilePage() {
   const [title, setTitle] = useState('Mr.');
   const [surname, setSurname] = useState('Button');
   const [birthDate, setBirthDate] = useState('1996-04-12');
+
 
   const handleImageChange = (event) => {
     setProfileImage(URL.createObjectURL(event.target.files[0]));
@@ -20,15 +23,20 @@ function ProfilePage() {
 
   return (
     <div className="profile-container">
-      <nav className="navbar">
-        {/* Nav items here */}
-      </nav>
-      <header className="profile-header">Benjamin Button - Employee Profile</header>
-      <div className="profile-content">
-        <div className="profile-image-container">
-          <label htmlFor="profileImage">Picture</label>
-          <img src={profileImage || 'default-profile.jpg'} alt="Profile" className="profile-image"/>
-          <input id="profileImage" type="file" onChange={handleImageChange} />
+      <NavBar>
+        
+      </NavBar>
+       <div className="profile-content">
+        <div className="card profile-image-card">
+          <div className="card-header">Profile Picture</div>
+          <div className="card-body text-center">
+            <img src={profileImage || 'default-profile.jpg'} alt="Profile" className="profile-image"/>
+            <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+            <input id="profileImage" type="file" onChange={handleImageChange} hidden />
+            <button className="btn btn-primary" onClick={() => document.getElementById('profileImage').click()}>
+              Upload new image
+            </button>
+          </div>
         </div>
         <div className="profile-fields">
           <div className="form-field">
@@ -62,7 +70,11 @@ function ProfilePage() {
           <button onClick={handleSaveChanges} className="save-button">Save Changes</button>
         </div>
       </div>
+      <AboutUs>
+        
+      </AboutUs>
     </div>
+
   );
 }
 

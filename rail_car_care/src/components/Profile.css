@@ -24,13 +24,26 @@
   }
   
   .profile-image-container {
-    flex-basis: 200px;
-    margin-right: 2rem;
+      flex-basis: 200px;
+  margin-right: 2rem;
+  background-color: #fff; /* white background */
+  padding: 1rem;
+  border-radius: 8px; /* rounded corners for the card */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  text-align: center; /* Center content */
+  margin-top: 1rem; 
   }
   
   .profile-image {
-    width: 100%;
-    border-radius: 50%;
+    width: 10rem; /* fixed width */
+    height: 10rem; /* fixed height to maintain aspect ratio */
+    border-radius: 50%; /* circular shape */
+    object-fit: cover; /* cover the container properly */
+    display: block; /* to apply margin auto for centering */
+    margin: auto; /* center the image inside the container */
+    border: 3px solid #fff; /* optional: white border around the image to match the reference */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optional: shadow for depth */
+    background-color: #f2f6fc; /* optional: background color if the image is transparent */
   }
   
   .profile-fields {
