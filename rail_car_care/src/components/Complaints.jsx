@@ -110,8 +110,10 @@ function Complaints() {
             >
               <option value="trainNo">Train No</option>
               <option value="coachType">Coach Type</option>
-              <option value="issueType">Issue Type</option>
-              <option value="issueLocation">Issue Location</option>
+              <option value="compartment">Compartment</option>
+              <option value="location">Issue Location</option>
+              <option value="serviceType">Service Type</option>
+              <option value="issue">Issue</option>
               <option value="description">Description</option>
             </select>
           </label>
@@ -131,8 +133,10 @@ function Complaints() {
               <tr>
                 <th onClick={() => handleSortAndSearch('trainNo')}>Train No</th>
                 <th onClick={() => handleSortAndSearch('coachType')}>CoachType</th>
-                <th onClick={() => handleSortAndSearch('issueType')}>Issue Type</th>
-                <th onClick={() => handleSortAndSearch('issueLocation')}>Issue Location</th>
+                <th onClick={() => handleSortAndSearch('compartment')}>Compartment</th>
+                <th onClick={() => handleSortAndSearch('location')}>Issue Location</th>
+                <th onClick={() => handleSortAndSearch('serviceType')}>Service Type</th>
+                <th onClick={() => handleSortAndSearch('issue')}>Issue</th>
                 <th onClick={() => handleSortAndSearch('description')}>Description</th>
                 <th>Action</th>
               </tr>
@@ -142,8 +146,10 @@ function Complaints() {
                 <tr key={complaint._id}>
                   <td>{complaint.trainNo}</td>
                   <td>{complaint.coachType}</td>
-                  <td>{complaint.issueType}</td>
-                  <td>{complaint.issueLocation}</td>
+                  <td>{complaint.compartment}</td>
+                  <td>{complaint.location}</td>
+                  <td>{complaint.serviceType}</td>
+                  <td>{complaint.issue}</td>
                   <td>{complaint.description}</td>
                   <td>
                     <Button variant="danger" onClick={() => handleDelete(complaint._id)}>
