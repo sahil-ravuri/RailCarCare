@@ -100,11 +100,9 @@ function Complaints() {
       <NavBar onLogout={handleLogout} />
           <Card>
             <CardBody>
-              <h2>Complaints</h2>
             <div className="filter">
           <label>
-            Filter By:
-            <select
+            <select style={{height: '40px',textJustify: 'center'}}
               value={filterColumn}
               onChange={(e) => setFilterColumn(e.target.value)}
             >
@@ -117,7 +115,7 @@ function Complaints() {
               <option value="description">Description</option>
             </select>
           </label>
-          <input
+          <input style={{height: '40px'}}
             type="text"
             placeholder="Filter value..."
             value={filterValue}

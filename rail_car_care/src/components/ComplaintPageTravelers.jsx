@@ -150,7 +150,7 @@ function ComplaintPageTravelers() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Container className="complaint-container" style={{backgroundColor:"black"}}>
+      <Container className="complaint-container">
          {!isSubmit ? (
           <Form className="complaint-form">
             <h2 className="mb-4">Raise a Complaint</h2>
