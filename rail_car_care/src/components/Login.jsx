@@ -1,16 +1,20 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
 import Logo from '../images/Logo.PNG';
 import ManagerLogo from '../images/Manager.png';
 import EmployeeLogo from '../images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [isFlipped, setFlipped] = useState(false);
     const [selectedUserType, setSelectedUserType] = useState(null);
+    const [errors, setErrors] = useState({});
+    const [mesg, setMesg] = useState('');
     const [loginData, setLoginData] = useState({
-        email: '',
+        empId: '',
         password: '',
         role: '',
     });
@@ -23,43 +27,77 @@ function LoginPage() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLoginData({ ...loginData, [name]: value });
+        setErrors({
+          ...errors,
+          [name]: '',
+        });
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+    
+        // Email validation
+        if (!loginData.empId.trim()) {
+          newErrors.empId = 'Employee Id is required';
+        } else if (loginData.empId.length !== 6) {
+          newErrors.empId = 'Invalid employee id address';
+        }
+        if (!loginData.password.trim()) {
+            newErrors.password = 'Password is required';
+          } else if (loginData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+          }
+          setErrors(newErrors);
+          return Object.values(newErrors).every((error) => !error);
     };
 
     const handleLogin = async () => {
-        console.log(loginData);
-        loginData.role = selectedUserType;
-        console.log(loginData);
-      
-        try {
+      loginData.role = selectedUserType;
+  
+      if (!validateForm()) {
+          return;
+      }
+  
           const response = await fetch('http://localhost:3001/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(loginData),
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(loginData),
           });
-
+  
           if (!response.ok) {
-            // Handle non-successful status codes (e.g., display an error message)
-            console.error(`Error: ${response.status} - ${response.statusText}`);
-            return;
+              const responseData = await response.json();
+              setMesg(responseData.message);
+              return;
           }
-      
+  
           const responseData = await response.json();
-      
+  
           if (responseData.message === 'Logged successfully') {
-            console.log('Successfully logged in');
-            localStorage.setItem('token', responseData.token);
-            window.location.href = '/manager';
+              localStorage.setItem('token', responseData.token);
+              localStorage.setItem('user', loginData.empId);
+              navigate('/home');
+              /*const reply = await fetch('http://localhost:3001/manager',{
+                method: 'GET',
+                header: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token')
+                }
+              });
+              if(reply.ok){
+                navigate('/manager');
+              }else{
+                console.log('You are not authorized')
+              } */
+              localStorage.setItem('userRole', loginData.role);
           } else {
-            console.log('Login failed. Server response:', responseData);
-            // Handle unsuccessful login (e.g., display an error message)
+              console.log('Login failed. Server response:', responseData);
+              setMesg(responseData.message);
           }
-        } catch (error) {
-          // Handle network errors or other exceptions
-          console.error('Error during login:', error);
-        }
-      };
+      
+  };
+  
       
 
     return (
@@ -79,17 +117,19 @@ function LoginPage() {
                             </Button>
                         </div>
                     ) : (
+                        <>{mesg && <p style={{ color: 'red', textJustify:'center' }}>{mesg}</p>}
                         <Form>
-                            <div className='form-inputs'>
+                        <div className='form-inputs'>
                                 <Form.Group>
                                     <Form.Control
-                                        type="email"
-                                        name="email"
-                                        value={loginData.email}
+                                        type="text"
+                                        name="empId"
+                                        value={loginData.empId}
                                         onChange={handleChange}
-                                        placeholder="Enter email"
+                                        placeholder="Enter Employee Id"
                                     />
                                 </Form.Group>
+                                {errors.empId && <p style={{ color: 'red' }}>{errors.empId}</p>}
                             </div>
                             <div className='form-inputs'>
                                 <Form.Group>
@@ -101,6 +141,7 @@ function LoginPage() {
                                         placeholder="Password"
                                     />
                                 </Form.Group>
+                                {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
                             </div>
                             <div className='form-inputs'><a href='/reset-password'>Forget Password?</a></div>
                             <div className="login-btn">
@@ -108,7 +149,7 @@ function LoginPage() {
                                     Log In
                                 </Button>
                             </div>
-                        </Form>
+                        </Form></>
                     )}
                 </Card.Body>
             </Card>

@@ -4,11 +4,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Complaint=require('./models/Complaint');
 const User=require('./models/User');
+const TrainDetail = require('./models/TrainDetail')
+const Train=require('./models/Train');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const session = require('express-session')
 
 
 const app = express();
@@ -19,11 +22,17 @@ app.use(cors({
   origin: 'http://localhost:3000'  // Adjust this if your frontend origin is different
 }));
 
+app.use(session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'vamsikrishnarolla@gmail.com',
-    pass: 'vk@1Naidu143'
+    user: process.env.USER,
+    pass: process.env.PASS
   }
 });
 
@@ -39,11 +48,13 @@ app.post('/submit-complaint', async (req, res) => {
     const newComplaint = new Complaint({
       trainNo: req.body.trainNo,
       coachType: req.body.coachType,
-      issueType: req.body.issueType,
-      issueLocation: req.body.issueLocation,
+      compartment: req.body.compartment,
+      location: req.body.location,
+      serviceType: req.body.serviceType,
+      issue: req.body.issue,
       description: req.body.description
     });
-
+    console.log(newComplaint);
     const savedComplaint = await newComplaint.save();
     res.status(201).json(savedComplaint); // Sending back the saved complaint as a JSON response
   } catch (error) {
@@ -62,6 +73,30 @@ app.get('/get-complaints', async (req, res) => {
   }
 });
 
+app.post('/get-employees', async (req, res) => {
+  const { user } = req.body;
+  try {
+    const employees = await User.find({manager: {$eq : user}})
+    res.json(employees);
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/get-train', async (req, res) => {
+  const { trainNo } = req.body;
+  try {
+    const trainType = await Train.findOne({trainNo: {$eq : trainNo}})
+    const trainDetails = await TrainDetail.findOne({traintype: {$eq: trainType.traintype}});
+    res.json(trainDetails);
+  } catch (error) {
+    console.error('Error fetching trains:', error);
+    res.status(500).send('Internal Server Error');
+  }
+
+});
+
 // API endpoint to delete a complaint by ID
 app.delete('/delete-complaint/:id', async (req, res) => {
   const { id } = req.params;
@@ -76,73 +111,49 @@ app.delete('/delete-complaint/:id', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const { email, password, role } = req.body;
-  console.log(email)
-  console.log(password)
-  console.log(role)
+  const { empId, password, role } = req.body;
 
-  try {
-    const user = await User.findOne({email, role});
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-    console.log(user.email)
-    console.log(user.password)
-    console.log(user.role)
+  const user = await User.findOne({ empId, role });
 
-    if (!user) {
-      console.log('user not found')
-      return res.status(400).send('User not found');
-    }
-
-    console.log('user is found')
-    const isMatch =await bcrypt.compare(password, hashedPassword)
-    console.log('password matching is done')
-    if (!isMatch) {
-      console.log('paswwords are not matching')
-      return res.status(400).send('Invalid credentials');
-    }
-    // Generate JWT Token
-
-    console.log('passwords match')
-    const token = jwt.sign({ id: user._id, role: user.role }, 'vkNaidu' , { expiresIn: '1h' });
-
-    console.log('jwt successfully created')
-    // Successful login
-    res.status(200).send({ message: 'Logged successfully', token });
-  } catch (error) {
-    console.error(error)
-    res.status(500).send('Server error');
+  if (!user) {
+      return res.status(400).json({ message: 'User not found' });
   }
+
+  const hashedPassword = await bcrypt.hash(user.password, 10);
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+
+  if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+  }
+  req.session.user = { empId, role: role };
+  // Generate JWT Token
+  const secret = process.env.JWT_SECRET
+  const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: '1h' });
+
+  // Successful login
+  return res.status(200).json({ message: 'Logged successfully', token });
 });
 
-
-
 const authenticate = (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).send('Access denied. No token provided.');
-  }
-
-  try {
-    const decoded = jwt.verify(token, 'group10');
-    req.user = decoded;
-    next();
-  } catch (ex) {
-    res.status(400).send('Invalid token.');
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
  // Applying middleware to /home route
-app.use('/manager', authenticate);// Applying middleware to /manager route
+app.use('/manager', authenticate);
+app.use('/complaints', authenticate);
+app.use('/orders', authenticate);// Applying middleware to /manager route
 
 let otpStore = {};
 
 app.post('/request-password-reset', async (req, res) => {
-  const email = req.body.email;
+  const {empId, email} = req.body;
   const otp = crypto.randomBytes(3).toString('hex').toUpperCase();
   
-  otpStore[email] = { otp, expires: new Date().getTime() + 300000 }; // 5 minutes expiry
+  otpStore[email] = { otp, expires: new Date().getTime() + 60 }; // 1 minutes expiry
 
   const mailOptions = {
     from: process.env.EMAIL_ADDRESS,
@@ -163,28 +174,32 @@ app.post('/request-password-reset', async (req, res) => {
 });
 
 app.post('/reset-password', async(req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const { empId, email, otp, password } = req.body;
+
   const storedOtp = otpStore[email];
 
   try{
 
-  if (!storedOtp || storedOtp.expires < new Date().getTime()) {
-    return res.status(400).send('OTP expired or invalid');
-  }
-
-  if (storedOtp.otp !== otp) {
-    return res.status(400).send('Invalid OTP');
-  }
+    if (!storedOtp || storedOtp.expires > new Date().getTime()) {
+      delete otpStore[email]; // Clear the used OTP
+      return res.status(400).send('OTP expired or invalid');
+    }
+    
+    if (storedOtp.otp !== otp) {
+      delete otpStore[email]; // Clear the used OTP
+      return res.status(400).send('Invalid OTP');
+    }
+    
 
   // Proceed to reset password logic (e.g., update in database)
   // Remember to hash the new password before storing
   const updatePassword = await User.findOneAndUpdate(
-    { email: email },
-    { $set: { password: newPassword } },
+    { empId: {$eq : empId}, email: {$eq : email}},
+    { $set: { password: password } },
     { new: true }
   );
 
-  if (updatedUser) {
+  if (updatePassword) {
     console.log('Password updated successfully:', updatePassword);
   } else {
     console.log('User not found with the provided email.');
@@ -196,6 +211,18 @@ app.post('/reset-password', async(req, res) => {
   delete otpStore[email];
 
   res.send('Password reset successfully');
+});
+
+app.get('/logout', (req, res) => {
+
+  req.session.destroy((err) => {
+      if (err) {
+          res.status(400).json({message:'Logout failed.'})
+          console.error(err);
+      } else {
+          res.status(200).json({ success: true });
+      }
+  });
 });
 
 

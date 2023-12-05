@@ -1,7 +1,8 @@
 .complaint-container {
-    background-color: #f7f7f7;
     padding: 20px;
     border-radius: 8px;
+    width: 560px;
+    height: 70%;
   }
   
   .complaint-form {
@@ -13,12 +14,12 @@
   
   .complaint-form label {
     font-weight: 600;
+    height: 15px;
   }
   
   .complaint-form select,
   .complaint-form textarea {
     width: 100%;
-    padding: 8px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -37,4 +38,8 @@
   
   .complaint-form button:hover {
     background-color: #0056b3;
+  }
+
+  p{
+    font-size: small;
   }

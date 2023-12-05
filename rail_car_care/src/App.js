@@ -6,11 +6,11 @@ import ManagerHome from './components/ManagerHome';
 import './App.css';
 import ComplaintPageTravelers from './components/ComplaintPageTravelers';
 import PasswordResetRequest from './components/PasswordReset';
-import OTPVerification from './components/OTPVerfication';
 import ProfilePage from './components/Profile';
-import { EmployeeCreationPage } from './components/Profile';
 import Orders from './components/Orders';
-import './components/Orders.css';
+import Complaints from './components/Complaints';
+import Assignments from './components/Assignments';
+
 
 function App() {
   const navigateToLogin = () => {
@@ -24,11 +24,12 @@ function App() {
           <Route path='/' element={<ComplaintPageTravelers/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
-          <Route path="/manager" element={<ManagerHome />} />
+          <Route path="/home" element={<ManagerHome />} />
           <Route path="/profile" element={<ProfilePage/> }/>
           <Route path="/orders" element={<Orders/> }/>
+          <Route path="/complaints" element={<Complaints/> }/>
+          <Route path="/assignments" element={<Assignments/> }/>
           <Route path="/reset-password" element={<PasswordResetRequest />} />
-          <Route path="/otp-verification" element={<OTPVerification />} />
         </Routes>
       </Router>
     </div>

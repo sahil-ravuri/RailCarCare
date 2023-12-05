@@ -1,7 +1,7 @@
 /* Main card container */
 .login-card {
-  width: 30%;
-  height: 50%;
+  width: 55%;
+  height: 65%;
   transform-style: preserve-3d; /* This makes sure child elements can have a 3D transform */
   transition: transform 0.5s;
   perspective: 1000px; /* Depth perception for 3D effect */
@@ -33,7 +33,7 @@
 }
 .form-inputs{
   text-justify: center;
-  padding: 10px;
+  padding: 2px;
 }
 .login-btn{
   text-align: center;
