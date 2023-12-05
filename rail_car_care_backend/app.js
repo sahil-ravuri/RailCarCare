@@ -4,8 +4,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Complaint=require('./models/Complaint');
 const User=require('./models/User');
-const TrainDetail = require('./models/TrainDetails')
-const Train=require('./models/Trains');
+const TrainDetail = require('./models/TrainDetail')
+const Train=require('./models/Train');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -48,11 +48,13 @@ app.post('/submit-complaint', async (req, res) => {
     const newComplaint = new Complaint({
       trainNo: req.body.trainNo,
       coachType: req.body.coachType,
-      issueType: req.body.issueType,
-      issueLocation: req.body.issueLocation,
+      compartment: req.body.compartment,
+      location: req.body.location,
+      serviceType: req.body.serviceType,
+      issue: req.body.issue,
       description: req.body.description
     });
-
+    console.log(newComplaint);
     const savedComplaint = await newComplaint.save();
     res.status(201).json(savedComplaint); // Sending back the saved complaint as a JSON response
   } catch (error) {
@@ -92,6 +94,7 @@ app.post('/get-train', async (req, res) => {
     console.error('Error fetching trains:', error);
     res.status(500).send('Internal Server Error');
   }
+
 });
 
 // API endpoint to delete a complaint by ID
@@ -122,40 +125,32 @@ app.post('/login', async (req, res) => {
   if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
   }
-
+  req.session.user = { empId, role: role };
   // Generate JWT Token
   const secret = process.env.JWT_SECRET
   const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: '1h' });
-  req.session.user = user;
 
   // Successful login
   return res.status(200).json({ message: 'Logged successfully', token });
 });
 
 const authenticate = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  const secret = process.env.JWT_SECRET;
-  console.log('this is authenticator')
-  if (!token) {
-    return res.status(401).send('Access denied. No token provided.');
-  }
-
-  try {
-    const decoded = jwt.verify(token, secret);
-    req.user = decoded;
-    next();
-  } catch (ex) {
-    res.status(400).send('Invalid token.');
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
  // Applying middleware to /home route
-app.use('/manager', authenticate);// Applying middleware to /manager route
+app.use('/manager', authenticate);
+app.use('/complaints', authenticate);
+app.use('/orders', authenticate);// Applying middleware to /manager route
 
 let otpStore = {};
 
 app.post('/request-password-reset', async (req, res) => {
-  const {email} = req.body;
+  const {empId, email} = req.body;
   const otp = crypto.randomBytes(3).toString('hex').toUpperCase();
   
   otpStore[email] = { otp, expires: new Date().getTime() + 60 }; // 1 minutes expiry
@@ -179,12 +174,13 @@ app.post('/request-password-reset', async (req, res) => {
 });
 
 app.post('/reset-password', async(req, res) => {
-  const { email, otp, password } = req.body;
+  const { empId, email, otp, password } = req.body;
+
   const storedOtp = otpStore[email];
 
   try{
 
-    if (!storedOtp || storedOtp.expires < new Date().getTime()) {
+    if (!storedOtp || storedOtp.expires > new Date().getTime()) {
       delete otpStore[email]; // Clear the used OTP
       return res.status(400).send('OTP expired or invalid');
     }
@@ -198,7 +194,7 @@ app.post('/reset-password', async(req, res) => {
   // Proceed to reset password logic (e.g., update in database)
   // Remember to hash the new password before storing
   const updatePassword = await User.findOneAndUpdate(
-    { email: email },
+    { empId: {$eq : empId}, email: {$eq : email}},
     { $set: { password: password } },
     { new: true }
   );
@@ -218,7 +214,7 @@ app.post('/reset-password', async(req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  console.log('Inside logout')
+
   req.session.destroy((err) => {
       if (err) {
           res.status(400).json({message:'Logout failed.'})
