@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
-import Logo from '../images/Logo.PNG';
-import ManagerLogo from '../images/Manager.png';
-import EmployeeLogo from '../images/Employee.png';
+import Logo from './images/Logo.PNG';
+import ManagerLogo from './images/Manager.png';
+import EmployeeLogo from './images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
