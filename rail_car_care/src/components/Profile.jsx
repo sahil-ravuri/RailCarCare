@@ -12,6 +12,10 @@ function ProfilePage() {
   const [surname, setSurname] = useState('Button');
   const [birthDate, setBirthDate] = useState('1996-04-12');
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
 
   const handleImageChange = (event) => {
     setProfileImage(URL.createObjectURL(event.target.files[0]));
@@ -23,9 +27,7 @@ function ProfilePage() {
 
   return (
     <div className="profile-container">
-      <NavBar>
-        
-      </NavBar>
+      <NavBar onLogout={handleLogout} />
        <div className="profile-content">
         <div className="card profile-image-card">
           <div className="card-header">Profile Picture</div>
