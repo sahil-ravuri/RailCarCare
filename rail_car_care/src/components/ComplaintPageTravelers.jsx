@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button, Navbar, Nav } from 'react-bootstrap';
 import './ComplaintPageTravelers.css';
 import { Link } from 'react-router-dom';
-import Logo from '../images/Logo.PNG';
+import Logo from './images/Logo.PNG';
 import './NavigationBar.css';
 
 function ComplaintPageTravelers() {
@@ -35,6 +35,7 @@ function ComplaintPageTravelers() {
     location: '',
     serviceType: '',
     issue: '',
+    status: '',
   });
   const [isSubmit, setSubmitted] = useState(false);
   const [formErrors, setFormErrors] = useState({});
@@ -91,6 +92,7 @@ function ComplaintPageTravelers() {
 
   const handleComplaintSubmit = async (e) => {
     e.preventDefault();
+    formData.status = 'open';
 
     if (!validateForm()) {
       return;
@@ -150,7 +152,7 @@ function ComplaintPageTravelers() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Container className="complaint-container" style={{backgroundColor:"black"}}>
+      <Container className="complaint-container">
          {!isSubmit ? (
           <Form className="complaint-form">
             <h2 className="mb-4">Raise a Complaint</h2>

@@ -8,6 +8,7 @@ const complaintSchema = new mongoose.Schema({
   serviceType: String,
   issue: String,
   description: String,
+  status: String,
 });
 
 module.exports = mongoose.model('Complaint', complaintSchema);

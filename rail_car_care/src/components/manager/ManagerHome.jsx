@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Card, CardBody, Row, Col, Modal, ModalBody, ModalHeader, ModalTitle, ModalFooter, Carousel } from 'react-bootstrap';
+import { Form, Button, Card, CardBody, Row, Col, Modal, ModalBody, ModalHeader, ModalTitle, ModalFooter, Carousel, Image } from 'react-bootstrap';
 import NavBar from './NavBar';
-import AboutUs from './AboutUs';
+import AboutUs from '../AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
+import Img1 from '../images/Train-Repair-1.jpg';
+import Img2 from "../images/Train-Repair-2.jpg";
 
 function ManagerHome() {
   const navigate = useNavigate();
@@ -23,6 +25,10 @@ function ManagerHome() {
     trainNo: '',
 
   });
+
+  const handleNavigate = ()=>{
+    navigate('/assignments');
+  }
 
   const handleLogout = async () => {
     const response = await fetch('http://localhost:3001/logout');
@@ -57,6 +63,10 @@ function ManagerHome() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      navigate('/login');
+    }
     fetchEmployees();
   }, []);
 
@@ -192,27 +202,20 @@ function ManagerHome() {
         <section className='carousel'>
         <Carousel>
           <Carousel.Item>
-            <img
-              src="./images/Train-Repair-1.jpg"
-              alt="First slide"
-            />
+            <Image className='img-slide' src={Img1} alt='First slide'/>
           </Carousel.Item>
           <Carousel.Item>
-            <img
-              src="./images/Train-Repair-2.jpg"
-              alt="Second slide"
-            />
+            <Image className='img-slide' src={Img2} alt='Second slide' />
           </Carousel.Item>
         </Carousel>
       </section>
-      <Row>
+      <Row className='row'>
         <Col md={6}>
           <Card>
             <CardBody>
               <h2>Employee Status</h2>
               <div className="filter">
                 <label>
-                  Filter By:
                   <select
                     value={filterColumn}
                     onChange={(e) => setFilterColumn(e.target.value)}
@@ -221,9 +224,11 @@ function ManagerHome() {
                     <option value="empFirstName">Employee Name</option>
                     <option value="department">Employee Department</option>
                     <option value="status">Employee Status</option>
+                    <option value="assignstatus">Assignment Status</option>
                   </select>
                 </label>
                 <input
+                  style={{height: '42px', width: '20%'}}
                   type="text"
                   placeholder="Filter value..."
                   value={filterValue}
@@ -240,7 +245,8 @@ function ManagerHome() {
                         <th onClick={() => handleSortAndSearch('empId')}>Employee Id</th>
                         <th onClick={() => handleSortAndSearch('empFirstName')}>Employee Name</th>
                         <th onClick={() => handleSortAndSearch('department')}>Department</th>
-                        <th onClick={() => handleSortAndSearch('status')}>Status</th>
+                        <th onClick={() => handleSortAndSearch('status')}>Employee Status</th>
+                        <th onClick={() => handleSortAndSearch('assignstatus')}>Assignment Status</th>
                         <th>Assign</th>
                       </tr>
                     </thead>
@@ -251,8 +257,9 @@ function ManagerHome() {
                           <td>{employee.empFirstName}</td>
                           <td>{employee.department}</td>
                           <td>{employee.status}</td>
+                          <td>{employee.assignstatus}</td>
                           <td>
-                            <Button variant="primary" onClick={() => handleAssign(employee.empId)}>
+                          <Button variant="primary" onClick={handleNavigate}>
                               Assign
                             </Button>
                           </td>

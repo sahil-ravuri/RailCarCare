@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Card, CardBody } from 'react-bootstrap';
 import NavBar from './NavBar';
-import AboutUs from './AboutUs';
+import AboutUs from '../AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,6 +37,10 @@ function Complaints() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      navigate('/login');
+    }
     fetchComplaints();
   }, []);
 
@@ -100,11 +104,9 @@ function Complaints() {
       <NavBar onLogout={handleLogout} />
           <Card>
             <CardBody>
-              <h2>Complaints</h2>
             <div className="filter">
           <label>
-            Filter By:
-            <select
+            <select style={{height: '40px',textJustify: 'center'}}
               value={filterColumn}
               onChange={(e) => setFilterColumn(e.target.value)}
             >
@@ -115,9 +117,10 @@ function Complaints() {
               <option value="serviceType">Service Type</option>
               <option value="issue">Issue</option>
               <option value="description">Description</option>
+              <option value="status">Status</option>
             </select>
           </label>
-          <input
+          <input style={{height: '40px'}}
             type="text"
             placeholder="Filter value..."
             value={filterValue}
@@ -138,6 +141,7 @@ function Complaints() {
                 <th onClick={() => handleSortAndSearch('serviceType')}>Service Type</th>
                 <th onClick={() => handleSortAndSearch('issue')}>Issue</th>
                 <th onClick={() => handleSortAndSearch('description')}>Description</th>
+                <th onClick={() => handleSortAndSearch('status')}>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -151,6 +155,7 @@ function Complaints() {
                   <td>{complaint.serviceType}</td>
                   <td>{complaint.issue}</td>
                   <td>{complaint.description}</td>
+                  <td>{complaint.status}</td>
                   <td>
                     <Button variant="danger" onClick={() => handleDelete(complaint._id)}>
                       Delete
