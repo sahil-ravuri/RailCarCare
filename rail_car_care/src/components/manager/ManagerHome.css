@@ -5,20 +5,20 @@
   padding: 20px;
 }
 .table-container {
-  max-height: 300px; /* Adjust the maximum height as needed */
+  max-height: 300px;
   overflow-y: auto;
 }
 
 .top-content {
   max-height: 300px;
   overflow-y: auto;
-  /* Additional styling as needed */
+
 }
 
 .train-stats {
   max-height: 300px;
   overflow-y: auto;
-  /* Additional styling as needed */
+ 
 }
 
 .row{
@@ -42,7 +42,6 @@ th {
   background-color: #f2f2f2;
 }
 
-/* Media Queries */
 @media screen and (max-width: 768px) {
   .top-content {
     max-height: 300px;

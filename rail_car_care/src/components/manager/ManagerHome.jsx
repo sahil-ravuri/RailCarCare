@@ -359,6 +359,7 @@ function ManagerHome() {
           </Carousel.Item>
         </Carousel>
       </section>
+      <div className='table-container'>
         <Row>
         <Col md={6}>
         <Card>
@@ -390,6 +391,7 @@ function ManagerHome() {
         </Card>
       </Col>
       </Row>
+      </div>
       </div>
   )}
   </section> );
