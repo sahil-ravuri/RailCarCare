@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Complaint=require('./models/Complaint');
 const Assignment=require('./models/Assignment');
 const User=require('./models/User');
+const Order=require('./models/Order');
 const TrainDetail = require('./models/TrainDetail')
 const Train=require('./models/Train');
 const cors = require('cors');
@@ -59,7 +60,6 @@ app.post('/submit-complaint', async (req, res) => {
 });
 
 app.post('/assign-order', async (req, res) => {
-  console.log(req.body);
   try {
     const newAssignment = new Assignment(req.body);
     const savedAssignment = await newAssignment.save();
@@ -70,10 +70,31 @@ app.post('/assign-order', async (req, res) => {
   }
 });
 
+app.post('/add-order', async (req, res) => {
+  try {
+    const order = new Order(req.body);
+    const savedOrder = await order.save();
+    res.status(201).json(savedOrder); // Sending back the saved complaint as a JSON response
+  } catch (error) {
+    console.error('Error submitting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 app.get('/get-assigned-tasks', async (req, res) => {
   try {
     const assignments = await Assignment.find();
     res.json(assignments);
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-orders', async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
   } catch (error) {
     console.error('Error fetching complaints:', error);
     res.status(500).send('Internal Server Error');
@@ -191,6 +212,27 @@ app.post('/update-user-assign', async (req, res) => {
   }
 });
 
+app.post('/update-order', async (req, res) => {
+  try {
+    const {_id, status} = req.body;
+    // Find the user by ID and update the specified fields
+    const updatedOrder = await Order.findOneAndUpdate(
+      { _id: {$eq : _id}},
+      { $set: { status: status} },
+      { new: true }
+    );
+
+    if (updatedOrder) {
+      res.json(updatedOrder);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.post('/get-employee', async (req, res) => {
   const { user } = req.body;
   try {
@@ -233,6 +275,18 @@ app.delete('/delete-complaint/:id', async (req, res) => {
   try {
     await Complaint.findByIdAndDelete(id);
     res.send('Complaint deleted successfully');
+  } catch (error) {
+    console.error('Error deleting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.delete('/delete-order/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await Order.findByIdAndDelete(id);
+    res.send('Order deleted successfully');
   } catch (error) {
     console.error('Error deleting complaint:', error);
     res.status(500).send('Internal Server Error');

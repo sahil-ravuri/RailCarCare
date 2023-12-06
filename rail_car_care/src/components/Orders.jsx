@@ -1,17 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Orders.css';
 import NavBar from './manager/NavBar';
+import { useNavigate } from 'react-router-dom';
 
 function Orders() {
-  const [orders, setOrders] = useState([
-    { id: 1, date: '05/09/2020', employeeName: 'Wade Warren', itemName: 'Product A', price: '$523', status: 'Pending' },
-    { id: 2, date: '28/08/2020', employeeName: 'Jenny Wilson', itemName: 'Product B', price: '$782', status: 'Delivered' },
-    // ... more orders
-  ]);
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState([]);
   const [editingOrderId, setEditingOrderId] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newOrder, setNewOrder] = useState({ date: '', employeeName: '', itemName: '', price: '', status: '' });
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        navigate('/login');
+    }
+
+    const fetchOrders = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/get-orders');
+            if (response.ok) {
+                const data = await response.json();
+                setOrders(data); // Set the profile data including empId
+            } else {
+                console.error('Failed to fetch profile');
+            }
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+        }
+    };
+
+    fetchOrders();
+}, [navigate]);
+
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -35,13 +57,21 @@ function Orders() {
     setShowAddModal(true);
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
+  const handleStatusChange = async(orderId, newStatus) => {
+    const response = await fetch('http://localhost:3001/update-user-assign',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({'_id': orderId, 'status': newStatus}),
+      });
     setOrders(orders.map(order => {
       if (order.id === orderId) {
         return { ...order, status: newStatus };
       }
       return order;
     }));
+    window.location.reload();
     setEditingOrderId(null);
   };
 
@@ -50,14 +80,25 @@ function Orders() {
     setNewOrder({ ...newOrder, [name]: value });
   };
 
-  const submitAddOrder = () => {
+  const submitAddOrder = async() => {
+    console.log(newOrder);
     if (!validateFields()) {
       alert('Please fill out all fields with valid information, including Employee Name, Item Name, and Status.');
       return;
     }
-    setOrders([...orders, { ...newOrder, id: orders.length + 1 }]);
+    const response = await fetch('http://localhost:3001/add-order',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newOrder),
+    })
+    if(response.ok){
     setShowAddModal(false);
     setNewOrder({ date: '', employeeName: '', itemName: '', price: '', status: '' });
+    window.location.reload();
+    }
+
   };
 
   const handleLogout = () => {
@@ -65,8 +106,21 @@ function Orders() {
     window.location.href = '/login';
   };
 
-  const handleDelete = (orderId) => {
-    setOrders(orders.filter(order => order.id !== orderId));
+  const handleDelete = async(id) => {
+    setOrders(orders.filter(order => order.id !== id));
+    try {
+        const response = await fetch(`http://localhost:3001/delete-order/${id}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          console.log('Complaint deleted successfully.');
+          window.location.reload(); // Refresh the complaints after deletion
+        } else {
+          console.error('Failed to delete complaint');
+        }
+      } catch (error) {
+        console.error('Error deleting complaint:', error);
+      }
   };
 
   const handleSearchChange = (e) => {
@@ -161,8 +215,8 @@ function Orders() {
         </thead>
         <tbody>
           {orders.map((order, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
+            <tr key={order._id}>
+              <td>{index+1}</td>
               <td>{order.date}</td>
               <td>{order.employeeName}</td>
               <td>{order.itemName}</td>
@@ -186,7 +240,7 @@ function Orders() {
                 {editingOrderId !== order.id && (
                   <button onClick={() => setEditingOrderId(order.id)}>Edit</button>
                 )}
-                <button className="delete-btn" onClick={() => handleDelete(order.id)}>Delete</button>
+                <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
               </td>
             </tr>
           ))}
