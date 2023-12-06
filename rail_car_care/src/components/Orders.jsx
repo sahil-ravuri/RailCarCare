@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './Orders.css';
-import NavBar from './manager/NavBar';
+import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 
 function Orders() {
+  const user =localStorage.getItem('user');
+  const role = localStorage.getItem('userRole');
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [editingOrderId, setEditingOrderId] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newOrder, setNewOrder] = useState({ date: '', employeeName: '', itemName: '', price: '', status: '' });
+  const [newOrder, setNewOrder] = useState({ date: '', empId: user, itemName: '', price: '', status: '' });
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -18,6 +20,7 @@ function Orders() {
     }
 
     const fetchOrders = async () => {
+      if(role === 'manager'){
         try {
             const response = await fetch('http://localhost:3001/get-orders');
             if (response.ok) {
@@ -29,6 +32,25 @@ function Orders() {
         } catch (error) {
             console.error('Error fetching profile:', error);
         }
+      }else{
+        try {
+          const response = await fetch('http://localhost:3001/get-orders-emp', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({user}),
+          });
+          if (response.ok) {
+              const data = await response.json();
+              setOrders(data); // Set the profile data including empId
+          } else {
+              console.error('Failed to fetch profile');
+          }
+      } catch (error) {
+          console.error('Error fetching profile:', error);
+      }
+      }
     };
 
     fetchOrders();
@@ -48,8 +70,8 @@ function Orders() {
   const validatePrice = (price) => priceRegex.test(price);
 
   const validateFields = () => {
-    const { employeeName, itemName, status } = newOrder;
-    return employeeName && itemName && status && validatePrice(newOrder.price);
+    const { itemName, status } = newOrder;
+    return itemName && status && validatePrice(newOrder.price);
   };
 
   const handleAddOrderClick = () => {
@@ -81,7 +103,6 @@ function Orders() {
   };
 
   const submitAddOrder = async() => {
-    console.log(newOrder);
     if (!validateFields()) {
       alert('Please fill out all fields with valid information, including Employee Name, Item Name, and Status.');
       return;
@@ -95,7 +116,7 @@ function Orders() {
     })
     if(response.ok){
     setShowAddModal(false);
-    setNewOrder({ date: '', employeeName: '', itemName: '', price: '', status: '' });
+    setNewOrder({ date: '', empId: user, itemName: '', price: '', status: '' });
     window.location.reload();
     }
 
@@ -150,10 +171,9 @@ function Orders() {
           />
           <input
             type="text"
-            name="employeeName"
-            value={newOrder.employeeName}
-            onChange={handleInputChange}
-            placeholder="Employee Name"
+            name="employeeId"
+            value={user}
+            readOnly
           />
           <input
             type="text"
@@ -206,7 +226,7 @@ function Orders() {
           <tr>
             <th>Order No.</th>
             <th>Date</th>
-            <th>Employee Name</th>
+            <th>Employee Id</th>
             <th>Item Name</th>
             <th>Price</th>
             <th>Status</th>
@@ -218,14 +238,14 @@ function Orders() {
             <tr key={order._id}>
               <td>{index+1}</td>
               <td>{order.date}</td>
-              <td>{order.employeeName}</td>
+              <td>{order.empId}</td>
               <td>{order.itemName}</td>
               <td>{order.price}</td>
               <td>
-                {editingOrderId === order.id ? (
+                {editingOrderId === order._id ? (
                   <select
                     value={order.status}
-                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
                     onBlur={() => setEditingOrderId(null)}
                   >
                     <option value="Delivered">Delivered</option>
@@ -238,7 +258,7 @@ function Orders() {
               </td>
               <td>
                 {editingOrderId !== order.id && (
-                  <button onClick={() => setEditingOrderId(order.id)}>Edit</button>
+                  <button onClick={() => setEditingOrderId(order._id)}>Edit</button>
                 )}
                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
               </td>
@@ -246,11 +266,6 @@ function Orders() {
           ))}
         </tbody>
       </table>
-  
-      <footer className="orders-pagination">
-        {/* Pagination controls can be added here */}
-      </footer>
-  
       {showAddModal && renderAddOrderModal()}
     </div>
   );

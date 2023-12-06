@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
-import NavBar from './manager/NavBar';
+import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import { useNavigate } from 'react-router-dom';
 
@@ -120,7 +120,6 @@ function ProfilePage() {
                     <button onClick={handleSubmit} className="save-button">Save Changes</button>
                 </div>
             </div>
-            <AboutUs />
         </div>
     );
 }

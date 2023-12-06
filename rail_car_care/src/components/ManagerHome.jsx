@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Card, CardBody, Row, Col, Modal, ModalBody, ModalHeader, ModalTitle, ModalFooter, Carousel, Image } from 'react-bootstrap';
+import { Button, Card, CardBody, Row, Col, Carousel, Image } from 'react-bootstrap';
 import NavBar from './NavBar';
-import AboutUs from '../AboutUs';
+import AboutUs from './AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
 import Img1 from '../images/Train-Repair-1.jpg';
@@ -10,21 +10,12 @@ import Img2 from "../images/Train-Repair-2.jpg";
 
 function ManagerHome() {
   const navigate = useNavigate();
-  const [assignId, setAssignId] = useState('');
   const [employees, setEmployees] = useState([]);
   const [complaints, setComplaints] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [filterColumn, setFilterColumn] = useState('empId');
   const [filterValue, setFilterValue] = useState('');
   const [trainStatistics, setTrainStatistics] = useState([]);
-  const [showAssignModal, setShowAssignModal] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [assignmentDetails, setAssignmentDetails] = useState({
-    assignmentId: '',
-    employeeId: '',
-    trainNo: '',
-
-  });
 
   const handleNavigate = ()=>{
     navigate('/assignments');
@@ -153,47 +144,7 @@ function ManagerHome() {
     }
   });
 
-  const handleAssign = (employee) => {
-    setSelectedEmployee(employee);
-    setShowAssignModal(true);
-    const assign = generateRandomAssignmentId();
-    setAssignId(assign);
-  };
-
-  const handleAssignModalClose = () => {
-    setShowAssignModal(false);
-    setSelectedEmployee(null);
-    setAssignmentDetails({
-      assignmentId: '',
-      // Reset other assignment details here
-    });
-  };
   const userRole = localStorage.getItem('userRole');
-  const generateRandomAssignmentId = () => {
-    // Generate a random 6-digit assignment ID
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
-
-  const handleAssignSubmit = () => {
-
-    // Save the assignment details to the Assignments table (Assuming you have a separate Assignments page)
-    // You can send a POST request to your server with the assignment details.
-
-    // For example:
-    // const response = await fetch('http://localhost:3001/create-assignment', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     assignmentId: randomAssignmentId,
-    //     // Include other assignment details from the state
-    //   }),
-    // });
-
-    // Close the modal and reset state
-    handleAssignModalClose();
-  };
 
   return (<section>
     <NavBar onLogout={handleLogout} />
@@ -304,41 +255,6 @@ function ManagerHome() {
           </Card>
         </Col>
       </Row>
-      <Modal show={showAssignModal} onHide={handleAssignModalClose}>
-        <ModalHeader closeButton>
-          <ModalTitle>Assign Task</ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Form>
-            <Form.Group controlId="formAssignmentId">
-              <Form.Label>Assignment ID</Form.Label>
-              <Form.Control
-                name="assignId"
-                type="text"
-                value={assignId}
-                readOnly
-              />
-            </Form.Group>
-            <Form.Group controlId="formAssignmentId">
-              <Form.Label>Employee ID</Form.Label>
-              <Form.Control
-                name="empId"
-                type="text"
-                value={selectedEmployee}
-                readOnly
-              />
-            </Form.Group>
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="secondary" onClick={handleAssignModalClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleAssignSubmit}>
-            Save Assignment
-          </Button>
-        </ModalFooter>
-      </Modal>
       <AboutUs />
       </div>
       ) : (
@@ -346,16 +262,10 @@ function ManagerHome() {
         <section className='carousel'>
         <Carousel>
           <Carousel.Item>
-            <img
-              src="./images/Train-Repair-1.jpg"
-              alt="First slide"
-            />
+            <Image className='img-slide' src={Img1} alt='First slide'/>
           </Carousel.Item>
           <Carousel.Item>
-            <img
-              src="./images/Train-Repair-2.jpg"
-              alt="Second slide"
-            />
+            <Image className='img-slide' src={Img2} alt='Second slide' />
           </Carousel.Item>
         </Carousel>
       </section>
@@ -382,6 +292,30 @@ function ManagerHome() {
                     <td>{trainStat.assignedRepairs}</td>
                     <td>{trainStat.pendingRepairs}</td>
                     <td>{trainStat.completedRepairs}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardBody>
+        </Card>
+      </Col><Col md={6}>
+        <Card>
+          <CardBody>
+            <h2>Assignment Statistics</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Total Assignments</th>
+                  <th>Pending Repairs</th>
+                  <th>Completed Repairs</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trainStatistics.map((trainStat) => (
+                  <tr key={trainStat.trainNo}>
+                    <td>{trainStat.trainNo}</td>
+                    <td>{trainStat.totalRepairs}</td>
+                    <td>{trainStat.assignedRepairs}</td>
                   </tr>
                 ))}
               </tbody>

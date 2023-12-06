@@ -10,6 +10,7 @@ function NavBar({ onLogout }) {
 
     const location = useLocation();
     const path = location.pathname;
+    const role = localStorage.getItem('userRole');
 
     return (
         <Navbar className="navigation" bg="dark" variant="dark" expand="lg" fixed="top">
@@ -21,11 +22,15 @@ function NavBar({ onLogout }) {
                     <Link to= "/home" className="nav-link">Home</Link>)}
                     { path === '/assignments' ? null :(
                     <Link to="/assignments" className="nav-link">Assignments</Link>)}
-                    { path === 'orders' ? null :(
+                    { path === '/orders' ? null :(
                     <Link to="/orders" className="nav-link">Orders</Link>)}
                     {path === '/complaints' ? null : (
                     <Link to="/complaints" className="nav-link">Complaints</Link>)}
-                    <Link to="/profile" className="nav-link">Profile</Link>
+                    {path === '/profile' ? null :(
+                    <Link to="/profile" className="nav-link">Profile</Link>)}
+                    { role === 'manager' ? (
+                       <Link to="/create-employee" className="nav-link">Create Employee</Link> 
+                    ): null}
                     <Button variant="danger" onClick={onLogout}>Logout</Button>
                 </Nav>
             </Navbar.Collapse>

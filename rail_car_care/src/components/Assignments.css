@@ -27,5 +27,10 @@
   }
   
   button:hover {
-    background-color: #0056b3;
+    background-color: #00a616;
+}
+
+.assigned-task-card{
+  height: 240px;
+  width: 210px;
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown, Card, Row, Col } from 'react-bootstrap';
+import { Card, Row, Col } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-modal';
 import UnassignedTasksModal from './UnassignedTasksModal';
 import NavBar from './NavBar';
 import './Assignments.css';
@@ -63,8 +62,8 @@ const AssignedTasks = () => {
   };
 
   return (
-    <div>
-      <h2>Assigned Tasks</h2>
+    <div className='container'>
+      <h2 style={{color: 'white'}}>Assigned Tasks</h2>
       <Row>
         {assignedTasks.map((task) => (
           <Col key={task._id} md={4} sm={6} xs={12} className="mb-4">
@@ -86,7 +85,7 @@ const AssignedTasks = () => {
         ))}
         {assignedTasks.length === 0 && (
           <Col xs={12} className="text-center">
-            <p>No assigned tasks yet.</p>
+            <h2 style={{color: 'white'}}>No assigned tasks yet.</h2>
           </Col>
         )}
       </Row>
@@ -95,7 +94,6 @@ const AssignedTasks = () => {
 };
 
 const AssignOrder = () => {
-  const navigate = useNavigate();
   const [unassignedOrders, setUnassignedOrders] = useState([]);
   const [technicians, setTechnicians] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState('');
@@ -233,10 +231,12 @@ const AssignOrder = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
   };
 
+  const role = localStorage.getItem('userRole');
 
   return (
     <main>
       <NavBar onLogout={handleLogout} />
+      { role === 'manager' ? (<>
       <div style={{ backgroundColor: "white", margin: "20px", borderRadius:"5px", padding: '20px'}}>
         <h2>Assign Order</h2>
         <select value={selectedOrder} onChange={(e) => setSelectedOrder(e.target.value)}>
@@ -263,7 +263,10 @@ const AssignOrder = () => {
           closeModal={closeModal}
           unassignedOrders={unassignedOrders} />
       </div>
-      <AssignedTasks />
+      <AssignedTasks /> </>): (
+        <><AssignedTasks /></>
+      )}
+      
     </main>
   );
 };

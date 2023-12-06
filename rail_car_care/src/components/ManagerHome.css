@@ -6,6 +6,7 @@
 }
 .table-container {
   max-height: 300px; /* Adjust the maximum height as needed */
+  width: auto;
   overflow-y: auto;
 }
 

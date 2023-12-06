@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
-import Logo from './images/Logo.PNG';
-import ManagerLogo from './images/Manager.png';
-import EmployeeLogo from './images/Employee.png';
+import Logo from '../images/Logo.PNG';
+import ManagerLogo from '../images/Manager.png';
+import EmployeeLogo from '../images/Employee.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
@@ -77,20 +77,9 @@ function LoginPage() {
           if (responseData.message === 'Logged successfully') {
               localStorage.setItem('token', responseData.token);
               localStorage.setItem('user', loginData.empId);
-              navigate('/home');
-              /*const reply = await fetch('http://localhost:3001/manager',{
-                method: 'GET',
-                header: {
-                    'Content-Type': 'application/json',
-                    'Authorization': localStorage.getItem('token')
-                }
-              });
-              if(reply.ok){
-                navigate('/manager');
-              }else{
-                console.log('You are not authorized')
-              } */
               localStorage.setItem('userRole', loginData.role);
+              navigate('/home');
+              
           } else {
               console.log('Login failed. Server response:', responseData);
               setMesg(responseData.message);
