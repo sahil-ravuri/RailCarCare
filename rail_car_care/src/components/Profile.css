@@ -21,6 +21,7 @@
     flex-wrap: wrap;
     justify-content: space-around;
     padding: 1rem;
+    max-height: 590px;
   }
   
   .profile-image-container {
@@ -49,6 +50,7 @@
   .profile-fields {
     flex: 1;
     min-width: 250px;
+    padding-left: 20px;
   }
   
   .form-field {

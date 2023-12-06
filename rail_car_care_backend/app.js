@@ -134,6 +134,39 @@ app.post('/update-complaint-assign', async (req, res) => {
   }
 });
 
+app.post('/update-profile', async (req, res) => {
+  const { empId, profileData } = req.body;
+
+  if (!empId || !profileData) {
+      return res.status(400).send('Missing empId or profile data');
+  }
+
+  try {
+      const updatedUser = await User.findOneAndUpdate(
+          { empId: empId },
+          {
+              $set: {
+                  empFirstName: profileData.empFirstName,
+                  empLastName: profileData.empLastName,
+                  phone: profileData.phone,
+                  email: profileData.email,
+                  birthDate: profileData.birthDate
+              }
+          },
+          { new: true } // This option returns the document after update
+      );
+
+      if (!updatedUser) {
+          return res.status(404).send('User not found');
+      }
+
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      console.error('Error updating user profile:', error);
+      res.status(500).send('Error updating user profile');
+  }
+});
+
 app.post('/update-user-assign', async (req, res) => {
   try {
     const {empId, status} = req.body;
@@ -155,6 +188,17 @@ app.post('/update-user-assign', async (req, res) => {
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/get-employee', async (req, res) => {
+  const { user } = req.body;
+  try {
+    const employees = await User.findOne({empId: {$eq : user}})
+    res.json(employees);
+  } catch (error) {
+    console.error('Error fetching employee:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
