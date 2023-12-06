@@ -3,7 +3,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Complaint=require('./models/Complaint');
+const Assignment=require('./models/Assignment');
 const User=require('./models/User');
+const Order=require('./models/Order');
 const TrainDetail = require('./models/TrainDetail')
 const Train=require('./models/Train');
 const cors = require('cors');
@@ -44,21 +46,57 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // API endpoint to handle form submission
 app.post('/submit-complaint', async (req, res) => {
+
+  console.log(req.body.status);
   try {
-    const newComplaint = new Complaint({
-      trainNo: req.body.trainNo,
-      coachType: req.body.coachType,
-      compartment: req.body.compartment,
-      location: req.body.location,
-      serviceType: req.body.serviceType,
-      issue: req.body.issue,
-      description: req.body.description
-    });
+    const newComplaint = new Complaint(req.body);
     console.log(newComplaint);
     const savedComplaint = await newComplaint.save();
     res.status(201).json(savedComplaint); // Sending back the saved complaint as a JSON response
   } catch (error) {
     console.error('Error submitting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/assign-order', async (req, res) => {
+  try {
+    const newAssignment = new Assignment(req.body);
+    const savedAssignment = await newAssignment.save();
+    res.status(201).json(savedAssignment); // Sending back the saved complaint as a JSON response
+  } catch (error) {
+    console.error('Error submitting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/add-order', async (req, res) => {
+  try {
+    const order = new Order(req.body);
+    const savedOrder = await order.save();
+    res.status(201).json(savedOrder); // Sending back the saved complaint as a JSON response
+  } catch (error) {
+    console.error('Error submitting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-assigned-tasks', async (req, res) => {
+  try {
+    const assignments = await Assignment.find();
+    res.json(assignments);
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-orders', async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -69,6 +107,139 @@ app.get('/get-complaints', async (req, res) => {
     res.json(complaints);
   } catch (error) {
     console.error('Error fetching complaints:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-unassigned-complaints', async (req, res) => {
+  try {
+    const complaints = await Complaint.find({status: {$eq: 'open'}});
+    res.json(complaints);
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/get-technicians', async (req, res) => {
+  const {user} = req.body;
+  try {
+    const users = await User.find({assignstatus: {$eq: 'unassign'}, manager:{$eq: user}});
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching complaints:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/update-complaint-assign', async (req, res) => {
+  try {
+    const {trainNo, compartment, status} = req.body;
+
+
+    // Find the user by ID and update the specified fields
+    const updatedComplaint = await Complaint.findOneAndUpdate(
+      { trainNo: {$eq : trainNo},compartment: {$eq: compartment}},
+      { $set: { status: status} },
+      { new: true }
+    );
+
+    if (updatedComplaint) {
+      res.json(updatedComplaint);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/update-profile', async (req, res) => {
+  const { empId, profileData } = req.body;
+
+  if (!empId || !profileData) {
+      return res.status(400).send('Missing empId or profile data');
+  }
+
+  try {
+      const updatedUser = await User.findOneAndUpdate(
+          { empId: empId },
+          {
+              $set: {
+                  empFirstName: profileData.empFirstName,
+                  empLastName: profileData.empLastName,
+                  phone: profileData.phone,
+                  email: profileData.email,
+                  birthDate: profileData.birthDate
+              }
+          },
+          { new: true } // This option returns the document after update
+      );
+
+      if (!updatedUser) {
+          return res.status(404).send('User not found');
+      }
+
+      res.status(200).json(updatedUser);
+  } catch (error) {
+      console.error('Error updating user profile:', error);
+      res.status(500).send('Error updating user profile');
+  }
+});
+
+app.post('/update-user-assign', async (req, res) => {
+  try {
+    const {empId, status} = req.body;
+    console.log(status);
+
+
+    // Find the user by ID and update the specified fields
+    const updatedUser = await User.findOneAndUpdate(
+      { empId: {$eq : empId}},
+      { $set: { assignstatus: status} },
+      { new: true }
+    );
+
+    if (updatedUser) {
+      res.json(updatedUser);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/update-order', async (req, res) => {
+  try {
+    const {_id, status} = req.body;
+    // Find the user by ID and update the specified fields
+    const updatedOrder = await Order.findOneAndUpdate(
+      { _id: {$eq : _id}},
+      { $set: { status: status} },
+      { new: true }
+    );
+
+    if (updatedOrder) {
+      res.json(updatedOrder);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/get-employee', async (req, res) => {
+  const { user } = req.body;
+  try {
+    const employees = await User.findOne({empId: {$eq : user}})
+    res.json(employees);
+  } catch (error) {
+    console.error('Error fetching employee:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -104,6 +275,29 @@ app.delete('/delete-complaint/:id', async (req, res) => {
   try {
     await Complaint.findByIdAndDelete(id);
     res.send('Complaint deleted successfully');
+  } catch (error) {
+    console.error('Error deleting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.delete('/delete-order/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await Order.findByIdAndDelete(id);
+    res.send('Order deleted successfully');
+  } catch (error) {
+    console.error('Error deleting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.delete('/delete-assignment/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Assignment.findByIdAndDelete(id);
+    res.send('Assignment deleted successfully');
   } catch (error) {
     console.error('Error deleting complaint:', error);
     res.status(500).send('Internal Server Error');

@@ -5,15 +5,16 @@ import Modal from 'react-modal';
 const UnassignedTasksModal = ({ isOpen, closeModal, unassignedOrders }) => {
   return (
     <Modal
+      style={{alinItems: 'center'}}
       isOpen={isOpen}
       onRequestClose={closeModal}
       contentLabel="Unassigned Tasks"
     >
-      <h2>Unassigned Tasks</h2>
+      <h2 style={{paddingTop: '100px'}}>Unassigned Tasks</h2>
       <ul>
         {unassignedOrders.map((order) => (
           <li key={order._id}>
-            {order.trainNo} - {order.coachType}
+            {order.trainNo} - {order.compartment} - {order.location} - {order.issue}
           </li>
         ))}
       </ul>
