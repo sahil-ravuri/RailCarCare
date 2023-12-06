@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button, Form, Card, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../images/Logo.PNG';
+import Logo from './images/Logo.PNG';
 import './Login.css';
 
 const PasswordResetRequest = () => {
