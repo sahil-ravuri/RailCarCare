@@ -3,12 +3,15 @@ function AboutUs() {
   const aboutUsStyle = {
     bottom: 0,
     left: 0,
+    height: '120px',
     width: "100%",
     position: 'fixed',
     backgroundColor: "rgb(42, 42, 43)", 
     color: "#fff",
     fontSize:"0.75rem",
-    fontFamily:"Helvetica"
+    fontFamily:"Helvetica",
+    textAlign: 'center',
+    padding: '20px'
   };
 
   return (

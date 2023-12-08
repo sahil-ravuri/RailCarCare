@@ -150,16 +150,7 @@ function ManagerHome() {
     <NavBar onLogout={handleLogout} />
     {userRole === 'manager' ? (
       <div>
-        <section className='carousel'>
-        <Carousel>
-          <Carousel.Item>
-            <Image className='img-slide' src={Img1} alt='First slide'/>
-          </Carousel.Item>
-          <Carousel.Item>
-            <Image className='img-slide' src={Img2} alt='Second slide' />
-          </Carousel.Item>
-        </Carousel>
-      </section>
+        
       <Row className='row'>
         <Col md={6}>
           <Card>
@@ -260,14 +251,6 @@ function ManagerHome() {
       ) : (
         <div>
         <section className='carousel'>
-        <Carousel>
-          <Carousel.Item>
-            <Image className='img-slide' src={Img1} alt='First slide'/>
-          </Carousel.Item>
-          <Carousel.Item>
-            <Image className='img-slide' src={Img2} alt='Second slide' />
-          </Carousel.Item>
-        </Carousel>
       </section>
         <Row>
         <Col md={6}>

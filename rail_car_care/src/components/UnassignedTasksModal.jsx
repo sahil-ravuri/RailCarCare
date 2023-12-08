@@ -12,11 +12,11 @@ const UnassignedTasksModal = ({ isOpen, closeModal, unassignedOrders }) => {
     >
       <h2 style={{paddingTop: '100px'}}>Unassigned Tasks</h2>
       <ul>
-        {unassignedOrders.map((order) => (
+        {unassignedOrders === 0 ?(<li>No tasks found</li>) : (unassignedOrders.map((order) => (
           <li key={order._id}>
             {order.trainNo} - {order.compartment} - {order.location} - {order.issue}
           </li>
-        ))}
+        )))}
       </ul>
       <button onClick={closeModal}>Close</button>
     </Modal>
