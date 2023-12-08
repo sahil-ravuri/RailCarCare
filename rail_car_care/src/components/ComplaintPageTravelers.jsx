@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button, Navbar, Nav } from 'react-bootstrap';
 import './ComplaintPageTravelers.css';
@@ -15,6 +15,8 @@ function ComplaintPageTravelers() {
     serviceType: '',
     issue: '',
   };
+
+  const [trains, setTrains] = useState([]);
 
   const [trainDetails, setTrainDetails] = useState({
     traintype: '',
@@ -54,6 +56,24 @@ function ComplaintPageTravelers() {
       [name]: '',
     });
   };
+
+  useEffect(() => {
+    const fetchTrains = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/get-trains');
+        if (response.ok) {
+          const data = await response.json();
+          setTrains(data);
+        } else {
+          alert('Failed to fetch trains');
+        }
+      } catch (error) {
+        console.error('Error fetching assigned tasks:', error);
+      }
+    };
+
+    fetchTrains();
+  }, []);
 
   const validateForm = () => {
     const newFormErrors = {};
@@ -158,14 +178,20 @@ function ComplaintPageTravelers() {
             <h2 className="mb-4">Raise a Complaint</h2>
             <Form.Group>
               <Form.Control
+                as="select"
                 name="trainNo"
-                type='text'
                 value={formData.trainNo}
                 onChange={getTrain}
                 isInvalid={!!formErrors.trainNo}
-                placeholder='Train No'
-              ></Form.Control>
-            </Form.Group><br />
+              >
+                <option>Select Train No</option>
+                {(trains).map((train) => (
+                  <option key={train} value={train.trainNo}>
+                    {train.trainNo}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
             {formErrors.trainNo && <p style={{ color: 'red' }}>{formErrors.trainNo}</p>}
             <Form.Group>
               <Form.Control

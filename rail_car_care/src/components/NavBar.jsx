@@ -28,9 +28,10 @@ function NavBar({ onLogout }) {
                     <Link to="/complaints" className="nav-link">Complaints</Link>)}
                     {path === '/profile' ? null :(
                     <Link to="/profile" className="nav-link">Profile</Link>)}
-                    { role === 'manager' ? (
-                       <Link to="/create-employee" className="nav-link">Create Employee</Link> 
-                    ): null}
+                    { (role === 'manager'&&path === '/create-employee') ? null :(
+                        <Link to="/create-employee" className="nav-link">Create Employee</Link>
+                    ) }
+                    
                     <Button variant="danger" onClick={onLogout}>Logout</Button>
                 </Nav>
             </Navbar.Collapse>

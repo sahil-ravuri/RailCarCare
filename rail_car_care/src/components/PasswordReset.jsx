@@ -44,7 +44,7 @@ const PasswordResetRequest = () => {
     // Email validation
     if (!formData.empId.trim()) {
       newErrors.empId = 'Employee Id is required';
-    }else if(formData.empId.length != 6){
+    }else if(formData.empId.length !== 6){
       newErrors.empId = 'Employee Id requires 6 digits';
     }
     if (!formData.email.trim()) {

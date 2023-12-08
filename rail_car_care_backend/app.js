@@ -47,14 +47,46 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 // API endpoint to handle form submission
 app.post('/submit-complaint', async (req, res) => {
 
-  console.log(req.body.status);
   try {
     const newComplaint = new Complaint(req.body);
-    console.log(newComplaint);
     const savedComplaint = await newComplaint.save();
     res.status(201).json(savedComplaint); // Sending back the saved complaint as a JSON response
   } catch (error) {
     console.error('Error submitting complaint:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/create-employee', async (req, res) => {
+  const user = req.body;
+  try {
+    // Create a new employee instance
+    const newEmployee = new User(user);
+
+    // Save the new employee to the database
+    const data = await newEmployee.save();
+
+    // Send a welcome email to the employee
+    const mailOptions = {
+      from: process.env.USER,
+      to: newEmployee.email,
+      subject: 'Welcome to the Company!',
+      text: `Dear ${newEmployee.empFirstName},\n\nWelcome to our company! Your employee ID is ${newEmployee.empId} and password: ${newEmployee.password}.\n\nBest regards,\nThe Company Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
+    // Respond with the created employee
+    res.status(200).send(newEmployee);
+  } catch (error) {
+    console.error('Error creating employee:', error.message);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -101,6 +133,17 @@ app.get('/get-orders', async (req, res) => {
   }
 });
 
+app.post('/get-orders-emp', async (req, res) => {
+  const {user} =req.body;
+  try {
+    const orders = await Order.find({empId: {$eq: user}});
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 app.get('/get-complaints', async (req, res) => {
   try {
     const complaints = await Complaint.find();
@@ -139,8 +182,8 @@ app.post('/update-complaint-assign', async (req, res) => {
 
     // Find the user by ID and update the specified fields
     const updatedComplaint = await Complaint.findOneAndUpdate(
-      { trainNo: {$eq : trainNo},compartment: {$eq: compartment}},
-      { $set: { status: status} },
+      { trainNo: {$eq : trainNo}, compartment: {$eq: compartment}},
+      { $set: {status: status} },
       { new: true }
     );
 
@@ -191,8 +234,6 @@ app.post('/update-profile', async (req, res) => {
 app.post('/update-user-assign', async (req, res) => {
   try {
     const {empId, status} = req.body;
-    console.log(status);
-
 
     // Find the user by ID and update the specified fields
     const updatedUser = await User.findOneAndUpdate(
@@ -253,6 +294,11 @@ app.post('/get-employees', async (req, res) => {
     console.error('Error fetching employees:', error);
     res.status(500).send('Internal Server Error');
   }
+});
+
+app.get('/get-trains', async (req, res) => {
+  const trains = await Train.find();
+  res.json(trains);
 });
 
 app.post('/get-train', async (req, res) => {
@@ -337,7 +383,7 @@ const authenticate = (req, res, next) => {
 };
 
  // Applying middleware to /home route
-app.use('/manager', authenticate);
+app.use('/home', authenticate);
 app.use('/complaints', authenticate);
 app.use('/orders', authenticate);// Applying middleware to /manager route
 
