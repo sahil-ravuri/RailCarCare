@@ -1,19 +1,9 @@
-/* Main styles */
-.img-slide {
-  height: auto; /* Maintain aspect ratio */
+.img-slide{
+  height: 240px;
   width: 400px;
-  display: block; /* Changed from flex to block for images */
-  margin: 20px auto; /* Center the image in the container */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-  border-radius: 8px; /* Rounded corners for the images */
-  transition: all 0.3s ease-in-out; /* Transition for hover effects */
+  justify-content: center;
+  padding: 20px;
 }
-
-.img-slide:hover {
-  transform: scale(1.03); /* Scale up image on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Larger shadow on hover for lift effect */
-}
-
 .table-container {
   width: auto;
   overflow-y: auto; /* Allow scrolling for large tables */

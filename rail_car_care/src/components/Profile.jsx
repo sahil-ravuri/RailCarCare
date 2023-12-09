@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import NavBar from './NavBar';
-import AboutUs from './AboutUs';
 import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
@@ -75,7 +74,8 @@ function ProfilePage() {
             }),
         });
         if (response.ok) {
-            console.log('Updated successfully');
+            alert('Profile updated successfully');
+            window.location.reload();
         } else {
             console.error('Failed to update profile');
         }

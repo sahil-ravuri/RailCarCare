@@ -29,8 +29,9 @@
   button:hover {
     background-color: #00a616;
 }
-
-.assigned-task-card{
-  height: 240px;
-  width: 210px;
+.assign-train{
+  height: 220px;
+  width: 220px;
+  padding: 5px;
 }
+

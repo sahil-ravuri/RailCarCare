@@ -31,7 +31,7 @@ const AssignedTasks = () => {
     };
 
     fetchAssignedTasks();
-  }, []);
+  });
 
   const handleDelete = async (task) => {
     const id = task._id;
@@ -41,7 +41,7 @@ const AssignedTasks = () => {
         method: 'DELETE',
       });
       if (response.ok) {
-        console.log('Assignment deleted successfully.');
+        alert('Assignment deleted successfully.');
         const response = await fetch('http://localhost:3001/update-user-assign',{
         method: 'POST',
         headers: {
@@ -49,13 +49,14 @@ const AssignedTasks = () => {
         },
         body: JSON.stringify({'empId': empId, 'status': 'unassign'}),
       });
+        if(response.ok){
         // Refresh the complaints after deletion
         const updatedTasks = assignedTasks.filter((task) => task._id !== id);
         setAssignedTasks(updatedTasks);
         window.location.reload();
       } else {
         console.error('Failed to delete complaint');
-      }
+      }}
     } catch (error) {
       console.error('Error deleting complaint:', error);
     }
@@ -67,7 +68,7 @@ const AssignedTasks = () => {
       <Row>
         {assignedTasks.map((task) => (
           <Col key={task._id} md={4} sm={6} xs={12} className="mb-4">
-            <Card className="assigned-task-card bg-white text-dark">
+            <Card className="assign-train bg-white text-dark">
               <Card.Body>
                 <Card.Title>{task.assignId}</Card.Title>
                 <Card.Text>
@@ -125,7 +126,6 @@ const AssignOrder = () => {
 
           setUnassignedOrders(ordersData);
           setTechnicians(techniciansData);
-          console.log(techniciansData)
         } else {
           console.error('Failed to fetch data');
         }
@@ -176,15 +176,16 @@ const AssignOrder = () => {
         const emp= assignment.empId;
         const trainNo = assignment.trainNo;
         const compartment =assignment.compartment;
-        console.log(emp);
+        const status = 'assigned';
         alert('Order assigned successfully.');
         const resp = await fetch('http://localhost:3001/update-complaint-assign',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({'trainNo': trainNo,'compartment': compartment, 'status': 'assigned'}),
+        body: JSON.stringify({'trainNo': trainNo,'compartment': compartment, 'status': status}),
       });
+
         const response = await fetch('http://localhost:3001/update-user-assign',{
         method: 'POST',
         headers: {
@@ -192,13 +193,14 @@ const AssignOrder = () => {
         },
         body: JSON.stringify({'empId': emp, 'status': 'assigned'}),
       });
+      if(resp.ok && response.ok){
         setSelectedOrder('');
         setSelectedTechnician('');
         fetchUnassignedOrders();
         window.location.reload();
       } else {
         alert('Failed to assign order.');
-      }
+      }}
     } catch (error) {
       console.error('Error assigning order:', error);
     }
