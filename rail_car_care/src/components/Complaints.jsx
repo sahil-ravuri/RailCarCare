@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Card, CardBody } from 'react-bootstrap';
 import NavBar from './NavBar';
-import AboutUs from './AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -171,7 +170,7 @@ function Complaints() {
       </div>
             </CardBody>
           </Card>
-      <AboutUs />
+    
     </div>
   );
 }

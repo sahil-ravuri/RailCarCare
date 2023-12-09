@@ -1,0 +1,62 @@
+/* AboutUs.css */
+.about-us-container {
+    display: block; /* Ensures the element is block-level */
+    width: 90%; /* Set width to 90% of the parent container */
+    margin: 1rem 5%; /* Uniform margin with auto horizontal centering */
+    background: linear-gradient(135deg, #c1c14d 0%, #26d5c4 100%); /* Gradient background */
+    color: #fff;
+    font-size: 0.75rem;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    padding: 2rem; /* More padding for better spacing */
+    border-top: 2px solid #565656;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    border-radius: 25px; /* Circular edges */
+    animation: enterAnimation 1.5s ease-out forwards; /* Animation for entry */
+  }
+  
+  /* Hover effect */
+  .about-us-container:hover {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+    transform: scale(1.02); /* Slightly enlarge the container */
+  }
+  
+  /* Title styles */
+  .about-us-title {
+    margin-top: 0;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .about-us-title:hover {
+    color: #e0e0e0; /* Lighten the title color on hover */
+  }
+  
+  /* Text styles */
+  .about-us-text {
+    margin: 1rem 0;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 600px) {
+    .about-us-container {
+      width: 100%; /* Full width on smaller screens */
+      margin: 1rem 0; /* Adjusts margin for smaller screens */
+      padding: 1rem;
+      font-size: 0.9rem;
+      border-radius: 15px; /* Slightly less rounded on smaller screens for aesthetics */
+    }
+  }
+  
+  /* Keyframes for animations */
+  @keyframes enterAnimation {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  

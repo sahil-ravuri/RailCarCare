@@ -1,35 +1,44 @@
-.img-slide{
-  height: 240px;
+/* Main styles */
+.img-slide {
+  height: auto; /* Maintain aspect ratio */
   width: 400px;
-  justify-content: center;
-  padding: 20px;
+  display: block; /* Changed from flex to block for images */
+  margin: 20px auto; /* Center the image in the container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  border-radius: 8px; /* Rounded corners for the images */
+  transition: all 0.3s ease-in-out; /* Transition for hover effects */
 }
+
+.img-slide:hover {
+  transform: scale(1.03); /* Scale up image on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Larger shadow on hover for lift effect */
+}
+
 .table-container {
-  max-height: 300px; /* Adjust the maximum height as needed */
   width: auto;
-  overflow-y: auto;
+  overflow-y: auto; /* Allow scrolling for large tables */
 }
 
-.top-content {
-  max-height: 300px;
-  overflow-y: auto;
-  /* Additional styling as needed */
-}
-
+.top-content,
 .train-stats {
-  max-height: 300px;
   overflow-y: auto;
-  /* Additional styling as needed */
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 8px; /* Rounded corners for content areas */
 }
 
-.row{
+.top-content:hover,
+.train-stats:hover {
+  background-color: #f8f9fa; /* Lighten the background on hover */
+}
+
+.row {
   padding-bottom: 50px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  border-spacing: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for the table */
 }
 
 th,
@@ -37,45 +46,62 @@ td {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
+  transition: background-color 0.3s ease; /* Background-color transition for hover */
+}
+
+th:hover,
+td:hover {
+  background-color: #eef; /* Slightly highlight on hover */
 }
 
 th {
   background-color: #f2f2f2;
 }
 
-/* Media Queries */
-@media screen and (max-width: 768px) {
-  .top-content {
-    max-height: 300px;
-  }
-
-  .train-stats {
-    max-height: 150px;
-  }
-
-  .table-container {
-    max-height: 150px;
-  }
-
-  table {
-    font-size: 14px;
-  }
+/* Keyframes for animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@media screen and (min-width: 800px) {
-  .top-content {
-    min-height: 200px;
+/* Apply the fadeIn effect to the table when the page loads */
+table {
+  animation: fadeIn 1s;
+}
+
+/* Subtle pulsing effect for primary buttons */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.btn-primary {
+  animation: pulse 2s infinite;
+}
+
+/* Media Queries for responsiveness */
+@media screen and (max-width: 768px) {
+  .img-slide {
+    width: 95%; /* Adjust image width for smaller screens */
+    margin: 10px auto; /* Adjust margin for smaller screens */
   }
 
+  .table-container,
+  .top-content,
   .train-stats {
-    min-height: 100px;
+    padding: 10px; /* Adjust padding for smaller screens */
   }
 
-  .table-container {
-    min-height: 100px;
+  .row {
+    padding-bottom: 20px; /* Less padding at the bottom for each row on smaller screens */
   }
 
   table {
-    font-size: 12px;
+    font-size: 14px; /* Adjust font size for readability on smaller screens */
+  }
+
+  th, td {
+    padding: 8px; /* Adjust cell padding for smaller screens */
   }
 }

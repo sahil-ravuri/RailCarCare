@@ -1,21 +1,68 @@
-/* Add this custom CSS to your component or stylesheet */
+/* Adjustments to the main navbar styles for responsiveness */
+.navigation {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Distributes space between and around content items */
+  align-items: center; /* Aligns items vertically */
+  height: auto; /* Adjust height automatically */
+  padding: 0 20px; /* Uniform padding */
+}
+
+.brand {
+  /* Allows the brand to take necessary space but not grow disproportionately */
+  display: flex;
+  align-items: center; /* Aligns the brand content vertically */
+  padding-left: 20px; /* Adjust padding as needed */
+}
+
 .custom-nav {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
-    
+  display: flex;
+  justify-content: flex-end; /* Keeps the navigation items on the right */
+  align-items: center; /* Aligns the navigation items vertically */
+  flex-grow: 1; /* Allows navigation items to take up any available space */
+}
+
+.image-logo {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+/* Responsive adjustments using media queries */
+@media (max-width: 768px) {
+  .navigation {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+    padding-top: 10px; /* Provide padding at the top */
+    padding-bottom: 10px; /* Provide padding at the bottom */
   }
-  .image-logo{
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
+
+  .custom-nav,
+  .brand {
+    justify-content: flex-end; /* Align both brand and nav items to the end */
+    padding-left: 0; /* Remove padding for smaller screens */
+    width: 100%; /* Full width for alignment */
+    flex-grow: 0; /* Do not allow flex items to grow on smaller screens */
   }
-  .brand{
-    padding-left: 50px;
+
+  .brand {
+    order: -1; /* Place the brand above the custom navigation on smaller screens */
   }
-  .navigation{
-    height: 10%
+
+  /* Optional: Add a hamburger menu icon for smaller screens and hide the regular menu items */
+  .hamburger-menu {
+    display: block; /* Show hamburger menu */
+    position: absolute; /* Absolute position to place it on top left or right as needed */
+    top: 10px; /* Position from the top */
+    right: 20px; /* Position from the right */
   }
-  
+
+  .navigation-items {
+    display: none; /* Hide navigation items initially on smaller screens */
+  }
+}
+
+/* When the hamburger menu is active, you can use JavaScript to toggle a class that changes the display to 'flex' */
+.navigation-items.active {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: flex-end; /* Align items to the right */
+}
