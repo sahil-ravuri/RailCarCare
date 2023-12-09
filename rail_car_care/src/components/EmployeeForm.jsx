@@ -1,6 +1,6 @@
 // EmployeeForm.js
 import React, { useState, useEffect } from 'react';
-import './Profile.css';
+import './EmployeeForm.css';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,12 +9,20 @@ const EmployeeForm = () => {
   const navigate = useNavigate();
   const [employee, setEmployee] = useState({
     empId: '',
-    role: '',
+    department: '',
+    role: 'employee',
     manager: user,
     email: '',
     empFirstName: '',
     empLastName: '',
     password: '',
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      navigate('/login');
+    }
   });
 
   const handleChange = (e) => {
@@ -29,7 +37,6 @@ const EmployeeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(employee)
 
     try {
       // Send employee data to the backend
@@ -44,7 +51,8 @@ const EmployeeForm = () => {
       alert('Employee created successfully!');
       setEmployee({
         empId: '',
-        role: '',
+        department: '',
+        role: 'employee',
         manager: user,
         email: '',
         empFirstName: '',
@@ -57,18 +65,18 @@ const EmployeeForm = () => {
     }
   };
 
-    return (
-        <div className="profile-container">
-            <NavBar onLogout={handleLogout} />
-            <div className="profile-content">
-                <div className="profile-fields">
+    return (<>
+        <NavBar onLogout={handleLogout} />
+        <div className="employee-container">    
+            <div className="employee-content">
+                <div className="employee-fields">
                     <div className="form-field">
                         <label htmlFor="empId">Emp Id</label>
                         <input name="empId" id="empId" value={employee.empId} onChange={handleChange} />
                     </div>
                     <div className="form-field">
-                        <label htmlFor="role">Role</label>
-                        <input name="role" id="role" value={employee.role} onChange={handleChange} />
+                        <label htmlFor="role">Department</label>
+                        <input name="department" id="department" value={employee.department} onChange={handleChange} />
                     </div>
                     <div className="form-field">
                         <label htmlFor="forename">First Name</label>
@@ -86,10 +94,11 @@ const EmployeeForm = () => {
                         <label htmlFor="password">Password</label>
                         <input name="password" id="password" value={employee.password} onChange={handleChange} />
                     </div>
-                    <button onClick={handleSubmit} className="save-button">Save Changes</button>
+                    <button onClick={handleSubmit} className="save-button">Create Employee</button>
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
