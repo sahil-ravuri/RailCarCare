@@ -307,6 +307,7 @@ function ManagerHome() {
         </Card>
       </Col>
       </Row>
+      <AboutUs />
       </div>
   )}
   </section> );
