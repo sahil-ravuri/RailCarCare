@@ -13,13 +13,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const session = require('express-session')
+const session = require('express-session');
 
 
 const app = express();
 // Middleware to parse JSON and form data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors({
   origin: 'http://localhost:3000'  // Adjust this if your frontend origin is different
 }));
@@ -199,35 +199,31 @@ app.post('/update-complaint-assign', async (req, res) => {
 });
 
 app.post('/update-profile', async (req, res) => {
-  const { empId, profileData } = req.body;
-
-  if (!empId || !profileData) {
-      return res.status(400).send('Missing empId or profile data');
-  }
+  const { empId, empFirstName, empLastName, phone, email, birthDate, profileImage } = req.body;
 
   try {
-      const updatedUser = await User.findOneAndUpdate(
-          { empId: empId },
-          {
-              $set: {
-                  empFirstName: profileData.empFirstName,
-                  empLastName: profileData.empLastName,
-                  phone: profileData.phone,
-                  email: profileData.email,
-                  birthDate: profileData.birthDate
-              }
-          },
-          { new: true } // This option returns the document after update
-      );
+    // Assuming User is your user model and empId uniquely identifies a user
+    const updatedUser = await User.findOneAndUpdate(
+      { empId: empId },
+      { 
+        empFirstName: empFirstName,
+        empLastName: empLastName,
+        phone: phone,
+        email: email,
+        birthDate: birthDate,
+        profileImage: profileImage 
+      },
+      { new: true } // This option returns the document after update was applied
+    );
 
-      if (!updatedUser) {
-          return res.status(404).send('User not found');
-      }
-
+    if (updatedUser) {
       res.status(200).json(updatedUser);
+    } else {
+      res.status(404).send('User not found');
+    }
   } catch (error) {
-      console.error('Error updating user profile:', error);
-      res.status(500).send('Error updating user profile');
+    console.error('Error updating user profile:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 

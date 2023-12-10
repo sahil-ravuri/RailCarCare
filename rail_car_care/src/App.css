@@ -1,4 +1,5 @@
 .App {
+  top: 100px;
   background-image: url("./images/bg.png");
   display: flex;
   justify-content: center;
