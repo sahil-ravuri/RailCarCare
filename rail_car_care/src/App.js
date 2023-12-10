@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
-import SignUp from './components/SignUp';
 import ManagerHome from './components/ManagerHome'; 
 import './App.css';
 import ComplaintPageTravelers from './components/ComplaintPageTravelers';
@@ -14,9 +13,6 @@ import EmployeePage from './components/EmployeeForm';
 
 
 function App() {
-  const navigateToLogin = () => {
-    window.location.href = '/';
-  };
 
   return (
     <div className="App">
@@ -24,7 +20,6 @@ function App() {
         <Routes>
           <Route path='/' element={<ComplaintPageTravelers/>}/>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp onSignupSuccess={navigateToLogin} />} />
           <Route path="/home" element={<ManagerHome />} />
           <Route path='/profile' element={<ProfilePage/> }/>
           <Route path='/orders' element={<Orders/>} />
