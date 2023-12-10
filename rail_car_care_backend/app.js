@@ -58,7 +58,7 @@ app.post('/submit-complaint', async (req, res) => {
 });
 
 app.post('/create-employee', async (req, res) => {
-  const user = req.body;
+  const {user} = req.body;
   try {
     // Create a new employee instance
     const newEmployee = new User(user);
@@ -250,6 +250,26 @@ app.post('/update-user-assign', async (req, res) => {
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/check-empId/:empId', async (req, res) => {
+  try {
+    const empIdExists = await User.exists({empId: req.params.empId });
+    res.json({ exists: empIdExists });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/check-email/:email', async (req, res) => {
+  try {
+    const emailExists = await User.exists({ email: req.params.email });
+    res.json({ exists: emailExists });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

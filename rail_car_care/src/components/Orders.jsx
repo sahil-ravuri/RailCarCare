@@ -80,7 +80,7 @@ function Orders() {
   };
 
   const handleStatusChange = async(orderId, newStatus) => {
-    const response = await fetch('http://localhost:3001/update-user-assign',{
+    const response = await fetch('http://localhost:3001/update-order',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -257,7 +257,7 @@ function Orders() {
                 )}
               </td>
               <td>
-                {editingOrderId !== order.id && (
+                {editingOrderId !== order._id && (
                   <button onClick={() => setEditingOrderId(order._id)}>Edit</button>
                 )}
                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>

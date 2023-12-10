@@ -35,7 +35,10 @@ const AssignedTasks = () => {
 
   const handleDelete = async (task) => {
     const id = task._id;
+    const trainNo = task.trainNo;
+    const compartment = task.compartment;
     const empId = task.empId;
+    const status = 'close';
     try {
       const response = await fetch(`http://localhost:3001/delete-assignment/${id}`, {
         method: 'DELETE',
@@ -49,14 +52,22 @@ const AssignedTasks = () => {
         },
         body: JSON.stringify({'empId': empId, 'status': 'unassign'}),
       });
-        if(response.ok){
-        // Refresh the complaints after deletion
-        const updatedTasks = assignedTasks.filter((task) => task._id !== id);
-        setAssignedTasks(updatedTasks);
-        window.location.reload();
-      } else {
-        console.error('Failed to delete complaint');
-      }}
+        if (response.ok) {
+          const resp = await fetch('http://localhost:3001/update-complaint-assign', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 'trainNo': trainNo, 'compartment': compartment, 'status': status }),
+          });
+          if(resp.ok){
+          const updatedTasks = assignedTasks.filter((task) => task._id !== id);
+          setAssignedTasks(updatedTasks);
+          window.location.reload();}
+        } else {
+          console.error('Failed to delete complaint');
+        }
+      }
     } catch (error) {
       console.error('Error deleting complaint:', error);
     }
@@ -140,6 +151,10 @@ const AssignOrder = () => {
   }, []);
 
   const handleAssignOrder = async () => {
+    if (!selectedOrder || !selectedTechnician) {
+      alert('Please select an order and a technician.');
+      return;
+    }
     const assignId = generateRandomAssignmentId();
     const selectedOrderData = JSON.parse(selectedOrder);
     const selectedTechnicianData = JSON.parse(selectedTechnician);
@@ -155,14 +170,7 @@ const AssignOrder = () => {
       status: 'assign',
     };
 
-
-    console.log(assignment)
-
     try {
-      if (!selectedOrder || !selectedTechnician) {
-        alert('Please select an order and a technician.');
-        return;
-      }
 
       const response = await fetch('http://localhost:3001/assign-order', {
         method: 'POST',
