@@ -5,16 +5,16 @@ import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
     const navigate = useNavigate();
-    const [profileImage, setProfileImage] = useState(null);
     const [profile, setProfile] = useState({
-        empId: '', // Assuming empId is part of the profile data
+        empId: '',
         empFirstName: '',
         empLastName: '',
         phone: '',
         email: '',
-        birthDate: ''
+        birthDate: '',
+        profileImage: '',
     });
-
+   
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -33,7 +33,7 @@ function ProfilePage() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setProfile(data); // Set the profile data including empId
+                    setProfile(data);
                 } else {
                     console.error('Failed to fetch profile');
                 }
@@ -59,25 +59,40 @@ function ProfilePage() {
     };
 
     const handleImageChange = (event) => {
-        setProfileImage(URL.createObjectURL(event.target.files[0]));
+        const {name,value} = event.target;
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setProfile(prevProfile => ({
+                ...prevProfile,
+                [name]: reader.result,
+            })); // Set the base64 string
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSubmit = async () => {
-        const response = await fetch('http://localhost:3001/update-profile', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                empId: profile.empId, // Sending empId along with the profile data
-                profileData: profile
-            }),
-        });
-        if (response.ok) {
+
+        console.log(profile.profileImage);
+
+        try {
+            const response = await fetch('http://localhost:3001/update-profile',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(profile),
+            });
+            if(response.ok){
             alert('Profile updated successfully');
             window.location.reload();
-        } else {
-            console.error('Failed to update profile');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
         }
     };
 
@@ -88,7 +103,7 @@ function ProfilePage() {
                 <div className="card profile-image-card">
                     <div className="card-header">Profile Picture</div>
                     <div className="card-body text-center">
-                        <img src={profileImage || 'default-profile.jpg'} alt="Profile" className="profile-image" />
+                        <img src={profile.profileImage || 'default-profile.jpg'} alt="Profile" className="profile-image" />
                         <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                         <input id="profileImage" type="file" onChange={handleImageChange} hidden />
                         <button className="btn btn-primary" onClick={() => document.getElementById('profileImage').click()}>
