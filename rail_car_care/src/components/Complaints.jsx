@@ -14,12 +14,10 @@ function Complaints() {
   const [filterValue, setFilterValue] = useState('');
 
   const handleLogout = async () => {
-    const response = await fetch('http://localhost:3001/logout');
-    if (response.ok) {
-      console.log('Inside logout');
-      localStorage.removeItem('token');
-      navigate('/login');
-    }
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   const fetchComplaints = async () => {

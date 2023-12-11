@@ -17,6 +17,8 @@ function ComplaintPageTravelers() {
   };
 
   const [trains, setTrains] = useState([]);
+  const [selectedServiceType, setSelectedServiceType] = useState('');
+  const [selectedCoachType, setSelectedCoachType] = useState('');
 
   const [trainDetails, setTrainDetails] = useState({
     traintype: '',
@@ -55,6 +57,14 @@ function ComplaintPageTravelers() {
       ...formErrors,
       [name]: '',
     });
+
+    if (name === 'coachType') {
+      setSelectedCoachType(value);
+    }
+
+    if (name === 'serviceType') {
+      setSelectedServiceType(value);
+    }
   };
 
   useEffect(() => {
@@ -219,9 +229,11 @@ function ComplaintPageTravelers() {
                 isInvalid={!!formErrors.compartment}
               >
                 <option>Select Compartment</option>
-                {(trainDetails.coach[0].compartment).map((coach) => (
-                  <option key={coach} value={coach}>
-                    {coach}
+              {trainDetails.coach
+                .find((coach) => coach.type === selectedCoachType)
+                ?.compartment.map((compartment) => (
+                  <option key={compartment} value={compartment}>
+                    {compartment}
                   </option>
                 ))}
               </Form.Control>
@@ -270,9 +282,11 @@ function ComplaintPageTravelers() {
                 isInvalid={!!formErrors.issue}
               >
                 <option>Select Issue</option>
-                {(trainDetails.service[0].issue).map((coach) => (
-                  <option key={coach} value={coach}>
-                    {coach}
+              {trainDetails.service
+                .find((service) => service.type === selectedServiceType)
+                ?.issue.map((issue) => (
+                  <option key={issue} value={issue}>
+                    {issue}
                   </option>
                 ))}
               </Form.Control>

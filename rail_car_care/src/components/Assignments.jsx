@@ -106,6 +106,7 @@ const AssignedTasks = () => {
 };
 
 const AssignOrder = () => {
+  const navigate = useNavigate();
   const [unassignedOrders, setUnassignedOrders] = useState([]);
   const [technicians, setTechnicians] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState('');
@@ -113,9 +114,11 @@ const AssignOrder = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   useEffect(() => {

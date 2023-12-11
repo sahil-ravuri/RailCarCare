@@ -62,9 +62,11 @@ app.post('/create-employee', async (req, res) => {
   try {
     // Create a new employee instance
     const newEmployee = new User(user);
+    const hashedPassword = await bcrypt.hash(newEmployee.password, 10);
+    const updatedUser = User.findOneAndUpdate({empId: {$eq: newEmployee.empId}},{$set :{password: hashedPassword}},{ new: true });
 
     // Save the new employee to the database
-    const data = await newEmployee.save();
+    const data = await updatedUser.save();
 
     // Send a welcome email to the employee
     const mailOptions = {
@@ -176,7 +178,7 @@ app.post('/get-technicians', async (req, res) => {
   }
 });
 
-app.post('/update-complaint-assign', async (req, res) => {
+app.post('/update-complaint-assign',async (req, res) => {
   try {
     const {trainNo, compartment, status} = req.body;
 
@@ -376,8 +378,7 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
   }
 
-  const hashedPassword = await bcrypt.hash(user.password, 10);
-  const isMatch = await bcrypt.compare(password, hashedPassword);
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -390,19 +391,6 @@ app.post('/login', async (req, res) => {
   // Successful login
   return res.status(200).json({ message: 'Logged successfully', token });
 });
-
-const authenticate = (req, res, next) => {
-  if (req.session && req.session.user) {
-    return next();
-  } else {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-};
-
- // Applying middleware to /home route
-app.use('/home', authenticate);
-app.use('/complaints', authenticate);
-app.use('/orders', authenticate);// Applying middleware to /manager route
 
 let otpStore = {};
 
@@ -450,14 +438,15 @@ app.post('/reset-password', async(req, res) => {
 
   // Proceed to reset password logic (e.g., update in database)
   // Remember to hash the new password before storing
+  const hashedPassword = await bcrypt.hash(password, 10);
   const updatePassword = await User.findOneAndUpdate(
     { empId: {$eq : empId}, email: {$eq : email}},
-    { $set: { password: password } },
+    { $set: { password: hashedPassword} },
     { new: true }
   );
 
   if (updatePassword) {
-    console.log('Password updated successfully:', updatePassword);
+    res.statusCode(201).json(updatePassword);
   } else {
     console.log('User not found with the provided email.');
   }
@@ -468,18 +457,6 @@ app.post('/reset-password', async(req, res) => {
   delete otpStore[email];
 
   res.send('Password reset successfully');
-});
-
-app.get('/logout', (req, res) => {
-
-  req.session.destroy((err) => {
-      if (err) {
-          res.status(400).json({message:'Logout failed.'})
-          console.error(err);
-      } else {
-          res.status(200).json({ success: true });
-      }
-  });
 });
 
 

@@ -6,7 +6,9 @@ import AboutUs from './AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
 
+
 function ManagerHome() {
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [complaints, setComplaints] = useState([]);
@@ -20,14 +22,10 @@ function ManagerHome() {
   }
 
   const handleLogout = async () => {
-    const response = await fetch('http://localhost:3001/logout');
-    if (response.ok) {
-      console.log('Inside logout');
-      localStorage.removeItem('token');
-      localStorage.removeItem('userRole');
-     localStorage.removeItem('user'); 
-      navigate('/login');
-    }
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   const fetchEmployees = async () => {
@@ -36,6 +34,7 @@ function ManagerHome() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': token,
         },
         body: JSON.stringify({ 'user': localStorage.getItem('user') })
       });
@@ -52,7 +51,7 @@ function ManagerHome() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    
     if(!token){
       navigate('/login');
     }
@@ -61,7 +60,11 @@ function ManagerHome() {
 
   const fetchComplaints = async () => {
     try {
-      const response = await fetch('http://localhost:3001/get-complaints');
+      const response = await fetch('http://localhost:3001/get-complaints',{
+        headers:{
+          'Authorization': token,
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setComplaints(data);

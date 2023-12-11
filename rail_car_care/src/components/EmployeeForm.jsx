@@ -33,8 +33,10 @@ const EmployeeForm = () => {
     setErrors({ ...errors, [name]: '' });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
     navigate('/login');
   };
 

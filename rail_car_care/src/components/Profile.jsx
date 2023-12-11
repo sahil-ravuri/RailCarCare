@@ -47,10 +47,12 @@ function ProfilePage() {
         fetchProfile();
     }, [navigate]);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('user');
         navigate('/login');
-    };
+      };
 
     const handleChange = (e) => {
         const { name, value } = e.target;

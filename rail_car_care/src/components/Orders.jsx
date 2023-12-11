@@ -122,11 +122,13 @@ function Orders() {
 
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
-
+  
   const handleDelete = async(id) => {
     setOrders(orders.filter(order => order.id !== id));
     try {
