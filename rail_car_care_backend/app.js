@@ -58,22 +58,31 @@ app.post('/submit-complaint', async (req, res) => {
 });
 
 app.post('/create-employee', async (req, res) => {
-  const {user} = req.body;
+  const {empId, department, role, manager, email, empFirstName, empLastName, password} = req.body;
+  console.log(manager);
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new employee instance
-    const newEmployee = new User(user);
-    const hashedPassword = await bcrypt.hash(newEmployee.password, 10);
-    const updatedUser = User.findOneAndUpdate({empId: {$eq: newEmployee.empId}},{$set :{password: hashedPassword}},{ new: true });
-
-    // Save the new employee to the database
-    const data = await updatedUser.save();
+    const newEmployee = new User({
+      empId: empId,
+      department: department,
+      role: role,
+      manager: manager,
+      email: email,
+      empFirstName: empFirstName,
+      empLastName: empLastName,
+      password: hashedPassword,
+      status: 'active',
+      assignstatus: 'unassign'
+    });
+    const updatedUser = newEmployee.save();
 
     // Send a welcome email to the employee
     const mailOptions = {
       from: process.env.USER,
-      to: newEmployee.email,
+      to: email,
       subject: 'Welcome to the Company!',
-      text: `Dear ${newEmployee.empFirstName},\n\nWelcome to our company! Your employee ID is ${newEmployee.empId} and password: ${newEmployee.password}.\n\nBest regards,\nThe Company Team`,
+      text: `Dear ${empFirstName},\n\nWelcome to our company! Your employee ID is ${empId} and password: ${password}.\n\nBest regards,\nThe Company Team`,
     };
 
     // Send the email
