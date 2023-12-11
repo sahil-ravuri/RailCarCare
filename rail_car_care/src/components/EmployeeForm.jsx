@@ -8,6 +8,7 @@ import UriContext from '../UriContext';
 const EmployeeForm = () => {
   const uri = useContext(UriContext);
   const user = localStorage.getItem('user');
+  console.log(user);
   const navigate = useNavigate();
   const [employee, setEmployee] = useState({
     empId: '',
@@ -82,6 +83,7 @@ const EmployeeForm = () => {
   };
 
   const handleSubmit = async (e) => {
+    const user = localStorage.getItem('user');
     e.preventDefault();
 
     if (!validateForm()) {
