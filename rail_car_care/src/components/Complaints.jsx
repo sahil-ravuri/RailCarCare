@@ -50,7 +50,6 @@ function Complaints() {
         method: 'DELETE',
       });
       if (response.ok) {
-        console.log('Complaint deleted successfully.');
         fetchComplaints(); // Refresh the complaints after deletion
       } else {
         console.error('Failed to delete complaint');

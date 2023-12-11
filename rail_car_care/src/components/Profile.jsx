@@ -14,11 +14,13 @@ function ProfilePage() {
         birthDate: '',
         profileImage: '',
     });
-   
+    const [imageKey, setImageKey] = useState(Date.now());
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');
+            return;
         }
 
         const fetchProfile = async () => {
@@ -59,26 +61,24 @@ function ProfilePage() {
     };
 
     const handleImageChange = (event) => {
-        const {name,value} = event.target;
         const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setProfile(prevProfile => ({
-                ...prevProfile,
-                [name]: reader.result,
-            })); // Set the base64 string
-        };
-
         if (file) {
+            const reader = new FileReader();
+    
+            reader.onloadend = () => {
+                setProfile(prevProfile => ({
+                    ...prevProfile,
+                    profileImage: reader.result
+                }));
+                setImageKey(Date.now()); // Update the key to force re-render
+            };
+    
             reader.readAsDataURL(file);
         }
     };
+    
 
     const handleSubmit = async () => {
-
-        console.log(profile.profileImage);
-
         try {
             const response = await fetch('http://localhost:3001/update-profile',{
                 method: 'POST',
@@ -88,8 +88,8 @@ function ProfilePage() {
                 body: JSON.stringify(profile),
             });
             if(response.ok){
-            alert('Profile updated successfully');
-            window.location.reload();
+                alert('Profile updated successfully');
+                window.location.reload();
             }
         } catch (error) {
             console.error('Error updating profile:', error);
@@ -103,7 +103,7 @@ function ProfilePage() {
                 <div className="card profile-image-card">
                     <div className="card-header">Profile Picture</div>
                     <div className="card-body text-center">
-                        <img src={profile.profileImage || 'default-profile.jpg'} alt="Profile" className="profile-image" />
+                        <img key={imageKey} src={profile.profileImage || 'default-profile.jpg'} alt="Profile" className="profile-image" />
                         <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                         <input id="profileImage" type="file" onChange={handleImageChange} hidden />
                         <button className="btn btn-primary" onClick={() => document.getElementById('profileImage').click()}>
