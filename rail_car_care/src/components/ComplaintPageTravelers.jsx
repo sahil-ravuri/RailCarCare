@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Form, Button, Navbar, Nav } from 'react-bootstrap';
 import './ComplaintPageTravelers.css';
 import { Link } from 'react-router-dom';
 import Logo from '../images/Logo.PNG';
 import './NavigationBar.css';
+import UriContext from '../UriContext';
 
 function ComplaintPageTravelers() {
+  const uri = useContext(UriContext);
   const initialFormData = {
     trainNo: '',
     coachType: '',
@@ -17,6 +19,8 @@ function ComplaintPageTravelers() {
   };
 
   const [trains, setTrains] = useState([]);
+  const [selectedServiceType, setSelectedServiceType] = useState('');
+  const [selectedCoachType, setSelectedCoachType] = useState('');
 
   const [trainDetails, setTrainDetails] = useState({
     traintype: '',
@@ -55,12 +59,20 @@ function ComplaintPageTravelers() {
       ...formErrors,
       [name]: '',
     });
+
+    if (name === 'coachType') {
+      setSelectedCoachType(value);
+    }
+
+    if (name === 'serviceType') {
+      setSelectedServiceType(value);
+    }
   };
 
   useEffect(() => {
     const fetchTrains = async () => {
       try {
-        const response = await fetch('http://localhost:3001/get-trains');
+        const response = await fetch(uri+'/get-trains');
         if (response.ok) {
           const data = await response.json();
           setTrains(data);
@@ -118,7 +130,7 @@ function ComplaintPageTravelers() {
       return;
     }
 
-    const response = await fetch('http://localhost:3001/submit-complaint', {
+    const response = await fetch(uri+'/submit-complaint', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -143,7 +155,7 @@ function ComplaintPageTravelers() {
     const { name, value } = e.target;
     if (value.length === 5) {
       formData.trainNo = value;
-      const data = await fetch('http://localhost:3001/get-train', {
+      const data = await fetch(uri+'/get-train', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -219,9 +231,11 @@ function ComplaintPageTravelers() {
                 isInvalid={!!formErrors.compartment}
               >
                 <option>Select Compartment</option>
-                {(trainDetails.coach[0].compartment).map((coach) => (
-                  <option key={coach} value={coach}>
-                    {coach}
+              {trainDetails.coach
+                .find((coach) => coach.type === selectedCoachType)
+                ?.compartment.map((compartment) => (
+                  <option key={compartment} value={compartment}>
+                    {compartment}
                   </option>
                 ))}
               </Form.Control>
@@ -270,9 +284,11 @@ function ComplaintPageTravelers() {
                 isInvalid={!!formErrors.issue}
               >
                 <option>Select Issue</option>
-                {(trainDetails.service[0].issue).map((coach) => (
-                  <option key={coach} value={coach}>
-                    {coach}
+              {trainDetails.service
+                .find((service) => service.type === selectedServiceType)
+                ?.issue.map((issue) => (
+                  <option key={issue} value={issue}>
+                    {issue}
                   </option>
                 ))}
               </Form.Control>
