@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
   birthDate: String,
   empFirstName: String,
   empLastName: String,
-  email: String
+  email: String,
+  profileImage: String,
 });
 
 module.exports = mongoose.model('User', UserSchema);

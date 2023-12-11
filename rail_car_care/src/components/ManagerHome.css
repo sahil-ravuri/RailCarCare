@@ -1,10 +1,23 @@
+<<<<<<< HEAD
 .img-slide{
+=======
+/* Add this custom CSS to your component or stylesheet */
+
+.slides {
+  width: 50%;
+  padding-left: 20%;
+}
+
+.img-slide {
+>>>>>>> b8b68802301ec4c252dd981b1c37c1684ace79d1
   height: 240px;
   width: 400px;
   justify-content: center;
   padding: 20px;
 }
+
 .table-container {
+<<<<<<< HEAD
   width: auto;
   overflow-y: auto; /* Allow scrolling for large tables */
 }
@@ -21,6 +34,19 @@
   background-color: #f8f9fa; /* Lighten the background on hover */
 }
 
+=======
+  max-height: 300px;
+  width: auto;
+  overflow-y: auto;
+}
+
+.top-content, .train-stats {
+  max-height: 300px;
+  overflow-y: auto;
+  /* Additional styling as needed */
+}
+
+>>>>>>> b8b68802301ec4c252dd981b1c37c1684ace79d1
 .row {
   padding-bottom: 50px;
 }
@@ -31,8 +57,7 @@ table {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for the table */
 }
 
-th,
-td {
+th, td {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
@@ -46,8 +71,10 @@ td:hover {
 
 th {
   background-color: #f2f2f2;
+  cursor: pointer; /* Indicates the header is clickable */
 }
 
+<<<<<<< HEAD
 /* Keyframes for animations */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -93,5 +120,37 @@ table {
 
   th, td {
     padding: 8px; /* Adjust cell padding for smaller screens */
+=======
+th svg {
+  margin-right: 5px; /* Space between icon and text */
+}
+
+.progress-bar {
+  background-color: #007bff; /* Customize as needed */
+}
+
+td .progress {
+  margin: 0; /* Full-width progress bar inside table cells */
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+  .top-content, .train-stats, .table-container {
+    max-height: 150px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .top-content, .train-stats, .table-container {
+    min-height: 100px;
+  }
+
+  table {
+    font-size: 12px;
+>>>>>>> b8b68802301ec4c252dd981b1c37c1684ace79d1
   }
 }

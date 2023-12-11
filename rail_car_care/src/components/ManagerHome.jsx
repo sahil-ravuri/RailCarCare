@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Card, CardBody, Row, Col, Carousel, Image } from 'react-bootstrap';
+import { Button, Card, CardBody, Row, Col } from 'react-bootstrap';
 import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
-import Img1 from '../images/Train-Repair-1.jpg';
-import Img2 from "../images/Train-Repair-2.jpg";
 
 function ManagerHome() {
   const navigate = useNavigate();
@@ -59,7 +57,7 @@ function ManagerHome() {
       navigate('/login');
     }
     fetchEmployees();
-  }, []);
+  });
 
   const fetchComplaints = async () => {
     try {
@@ -124,9 +122,9 @@ function ManagerHome() {
     trainStatistics.forEach((trainStat) => {
       const trainComplaints = complaints.filter((complaint) => complaint.trainNo === trainStat.trainNo);
       trainStat.totalRepairs = trainComplaints.length;
-      trainStat.assignedRepairs = trainComplaints.filter((complaint) => complaint.status === 'Assigned').length;
-      trainStat.pendingRepairs = trainComplaints.filter((complaint) => complaint.status === 'Pending').length;
-      trainStat.completedRepairs = trainComplaints.filter((complaint) => complaint.status === 'Completed').length;
+      trainStat.assignedRepairs = trainComplaints.filter((complaint) => complaint.status === 'assigned').length;
+      trainStat.pendingRepairs = trainComplaints.filter((complaint) => complaint.status === 'open').length;
+      trainStat.completedRepairs = trainComplaints.filter((complaint) => complaint.status === 'close').length;
     });
 
     setTrainStatistics([...trainStatistics]); // Update state to trigger a re-render
@@ -201,7 +199,7 @@ function ManagerHome() {
                           <td>{employee.status}</td>
                           <td>{employee.assignstatus}</td>
                           <td>
-                          <Button variant="primary" onClick={handleNavigate}>
+                          <Button variant="primary" onClick={handleNavigate} disabled={employee.assignstatus === 'assigned' ? true : false}>
                               Assign
                             </Button>
                           </td>
@@ -219,6 +217,7 @@ function ManagerHome() {
         <Col md={6}>
           <Card>
             <CardBody>
+              <div className='table-container'>
               <h2>Train Statistics</h2>
               <table>
                 <thead>
@@ -242,6 +241,7 @@ function ManagerHome() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </CardBody>
           </Card>
         </Col>
@@ -307,6 +307,7 @@ function ManagerHome() {
         </Card>
       </Col>
       </Row>
+      <AboutUs />
       </div>
   )}
   </section> );
