@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Card, CardBody, Row, Col } from 'react-bootstrap';
 import NavBar from './NavBar';
 import AboutUs from './AboutUs';
 import './ManagerHome.css';
 import { useNavigate } from 'react-router-dom';
+import UriContext from '../UriContext';
 
 
 function ManagerHome() {
+  const uri = useContext(UriContext);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
@@ -30,7 +32,7 @@ function ManagerHome() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch('http://localhost:3001/get-employees', {
+      const response = await fetch(uri+'/get-employees', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +62,7 @@ function ManagerHome() {
 
   const fetchComplaints = async () => {
     try {
-      const response = await fetch('http://localhost:3001/get-complaints',{
+      const response = await fetch(uri+'/get-complaints',{
         headers:{
           'Authorization': token,
         }

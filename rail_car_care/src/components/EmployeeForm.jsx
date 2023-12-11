@@ -1,10 +1,12 @@
 // EmployeeForm.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './EmployeeForm.css';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
+import UriContext from '../UriContext';
 
 const EmployeeForm = () => {
+  const uri = useContext(UriContext);
   const user = localStorage.getItem('user');
   const navigate = useNavigate();
   const [employee, setEmployee] = useState({
@@ -88,7 +90,7 @@ const EmployeeForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/create-employee', {
+      const response = await fetch(uri+'/create-employee', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

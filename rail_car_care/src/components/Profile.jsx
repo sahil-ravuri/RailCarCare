@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Profile.css';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
+import UriContext from '../UriContext';
 
 function ProfilePage() {
+    const uri = useContext(UriContext);
     const navigate = useNavigate();
     const [profile, setProfile] = useState({
         empId: '',
@@ -26,7 +28,7 @@ function ProfilePage() {
         const fetchProfile = async () => {
             const user = localStorage.getItem('user');
             try {
-                const response = await fetch('http://localhost:3001/get-employee', {
+                const response = await fetch(uri+'/get-employee', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -82,7 +84,7 @@ function ProfilePage() {
 
     const handleSubmit = async () => {
         try {
-            const response = await fetch('http://localhost:3001/update-profile',{
+            const response = await fetch(uri+'/update-profile',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
