@@ -155,8 +155,9 @@ app.get('/get-complaints', async (req, res) => {
 });
 
 app.get('/get-unassigned-complaints', async (req, res) => {
+  const status = 'open';
   try {
-    const complaints = await Complaint.find({status: {$eq: 'open'}});
+    const complaints = await Complaint.find({status: {$eq: status}});
     res.json(complaints);
   } catch (error) {
     console.error('Error fetching complaints:', error);
